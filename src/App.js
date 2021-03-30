@@ -1,24 +1,33 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import Main from './components/main';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core';
+
+const theme = createMuiTheme({
+  // overrides: {
+  //   MuiCssBaseline: {
+  //     '@global': {
+  //       '*::-webkit-scrollbar': {
+  //         width: '0.4em',
+  //       },
+  //       '*::-webkit-scrollbar-track': {
+  //         '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+  //       },
+  //       '*::-webkit-scrollbar-thumb': {
+  //         backgroundColor: 'rgba(0,0,0,.1)',
+  //         outline: '1px solid slategrey'
+  //       }
+  //     }
+  //   }
+  // }
+})
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Main />
+    </ThemeProvider>
+
   );
 }
 
