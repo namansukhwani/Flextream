@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, } from 'react';
 import {
-    useTheme,
+    // useTheme,
     makeStyles,
-    Container,
-    Typography,
-    Avatar,
 
 } from '@material-ui/core';
-import {AiFillInfoCircle} from 'react-icons/ai';
+// import {AiFillInfoCircle} from 'react-icons/ai';
 import RecentlyAddedList from './RecentAddedHome';
 import MovieScrollView from './MovieScrollView';
 import {FaStar,FaLaughSquint,FaGhost} from 'react-icons/fa'
@@ -21,7 +18,7 @@ const url_link = "https://yts.mx/api/v2/";
 const Home = (props) => {
 
     const styles = useStyles();
-    const theme = useTheme
+    // const theme = useTheme
 
     // refs
 

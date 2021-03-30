@@ -31,8 +31,8 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
     const [similarMoviesData, setSimilarMoviesData] = useState([])
 
     //lifecycle
-    useEffect(async ()=>{
-        await setSimilarLoading(true);
+    useEffect(()=>{
+        setSimilarLoading(true);
         fetchSimilarMovies();
     },[data])
 
@@ -68,7 +68,7 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
                 <Tooltip title={movie.title} arrow placement="bottom">
                     <Paper onClick={()=>{handelSimilarMovie(movie.id)}} key={index.toString()} className={styles.movieCon}>
                         <div style={{}}>
-                            <img src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                            <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                         </div>
                         <Container className={styles.titleCon}>
                             <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -111,7 +111,7 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
                                 >
                                     {
                                         [data.large_screenshot_image1, data.large_screenshot_image2, data.large_screenshot_image3].map((image, index) => {
-                                            return <img key={index} src={"https://vpn-api.herokuapp.com/fetch/image?url="+image} className={styles.imageStyle} />
+                                            return <img alt="" key={index} src={"https://vpn-api.herokuapp.com/fetch/image?url="+image} className={styles.imageStyle} />
                                         })
                                     }
                                 </Carousel>
@@ -120,7 +120,7 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
                             </Container>
                             <Container maxWidth="xl" className={styles.titleDiv}>
                                 <Paper elevation={10} className={styles.posterDiv}>
-                                    <img src={"https://vpn-api.herokuapp.com/fetch/image?url="+data.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                                    <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url="+data.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                                 </Paper>
                                 <div style={{ paddingInline: '15px', display: "flex", flexDirection: "column" }}>
                                     <div style={{ marginBottom: '15px', display: "flex" }}>
@@ -168,7 +168,7 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
                                         {data.cast.map((data, index) => {
                                             return <div key={index} className={styles.castBox}>
                                                 <Grid md={3}>
-                                                    <Avatar src={"https://vpn-api.herokuapp.com/fetch/image?url="+data.url_small_image} />
+                                                    <Avatar alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url="+data.url_small_image} />
                                                 </Grid>
                                                 <Grid md={9}>
                                                     <Typography noWrap style={{ color: '#fff', marginLeft: "10px", fontSize: "18px" }}>{data.name}</Typography>
