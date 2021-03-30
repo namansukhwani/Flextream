@@ -1,7 +1,7 @@
-import React, { useState,useCallback } from 'react';
+import React, { useState } from 'react';
 import {
     Drawer,
-    useTheme,
+    // useTheme,
     makeStyles,
     IconButton,
     List,
@@ -20,7 +20,7 @@ import clsx from 'clsx';
 const SideToolbar = (props) => {
 
     const styles = useStyles();
-    const theme = useTheme()
+    // const theme = useTheme()
 
     // refs
 

@@ -87,67 +87,70 @@ const VideoPlayer = (props) => {
     const [torrentFiles, settorrentFiles] = useState([])
     const [downloadSpeed, setDownloadSpeed] = useState(0)
     //lifecycle
-    useEffect(async () => {
-        // console.log("lund");
-        let index=await selectMoviequality()
-        // console.log(index);
+    useEffect(() => {
         var client = new WebTorrent(config);
-
-        client.on('error', err => {
-            console.log('Webtorrent Error::', err);
-        })
-
-        // const interval = setInterval(() => { 
-        //     console.log(`${client.progress * 100}%`);
-        //     console.log("download Speed",client.downloadSpeed/125);
-        //     console.log("upload speed",client.uploadSpeed/125);
-        //     if(client.progress!==0){
-        //         setProgress(client.progress * 100);
-        //     }
-        // }, 5000)
-
-        client.add(state.torrents[index].hash,torrentOptions, torrent => {
-            console.log("torrent started");
-            
-            setInterval(() => { 
-                if(torrent.progress!==0){
-                    setProgress(torrent.progress * 100);
-                }
-                if(torrent.downloadSpeed!==0){
-                    setDownloadSpeed(torrent.downloadSpeed/125)
-                }
-                console.log(`${torrent.progress * 100}%`);
-                console.log(torrent.downloadSpeed/125)
-            }, 5000)
-
-            torrent.on('done', () => {
-                console.log("Torrent complete 100%");
-                // clearInterval(interval)
+        async function run(){
+            let index=await selectMoviequality()
+            // console.log(index);
+    
+            client.on('error', err => {
+                console.log('Webtorrent Error::', err);
             })
-            
-            torrent.on('warning',(err)=>{
-                console.log(err);
-            })
-
-            console.log(torrent.downloaded)
-
-            torrent.on('metadata',()=>{
-                console.log("metadeta downloded");
-            })
-            settorrentFiles(torrent.files)
-
-            // var mp4File = torrentFiles.find(function (file) {
-            //     return file.name.endsWith('.mp4');
+    
+            // const interval = setInterval(() => { 
+            //     console.log(`${client.progress * 100}%`);
+            //     console.log("download Speed",client.downloadSpeed/125);
+            //     console.log("upload speed",client.uploadSpeed/125);
+            //     if(client.progress!==0){
+            //         setProgress(client.progress * 100);
+            //     }
+            // }, 5000)
+    
+            client.add(state.torrents[index].hash,torrentOptions, torrent => {
+                console.log("torrent started");
                 
-            // });
-            // setLoading(false);
-
-            // console.log(mp4File);
-            console.log(torrent.files);
-            var file=torrent.files[0]
-            file.renderTo(playerRef.current)
-
-        })
+                setInterval(() => { 
+                    if(torrent.progress!==0){
+                        setProgress(torrent.progress * 100);
+                    }
+                    if(torrent.downloadSpeed!==0){
+                        setDownloadSpeed(torrent.downloadSpeed/125)
+                    }
+                    console.log(`${torrent.progress * 100}%`);
+                    console.log(torrent.downloadSpeed/125)
+                }, 5000)
+    
+                torrent.on('done', () => {
+                    console.log("Torrent complete 100%");
+                    // clearInterval(interval)
+                })
+                
+                torrent.on('warning',(err)=>{
+                    console.log(err);
+                })
+    
+                console.log(torrent.downloaded)
+    
+                torrent.on('metadata',()=>{
+                    console.log("metadeta downloded");
+                })
+                settorrentFiles(torrent.files)
+    
+                // var mp4File = torrentFiles.find(function (file) {
+                //     return file.name.endsWith('.mp4');
+                    
+                // });
+                // setLoading(false);
+    
+                // console.log(mp4File);
+                console.log(torrent.files);
+                var file=torrent.files[0]
+                file.renderTo(playerRef.current)
+    
+            })
+        }
+        // console.log("lund");
+        run()
 
         return()=>{
             // clearInterval(interval)

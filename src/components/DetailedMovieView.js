@@ -32,35 +32,38 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
 
     //lifecycle
     useEffect(()=>{
+        async function fetchSimilarMovies(){
+            fetch("https://vpn-api.herokuapp.com/fetch",{
+                method:"POST",
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin':"*"
+                },
+                body:JSON.stringify({
+                    url:url_link + `movie_suggestions.json?movie_id=${data.id}`,
+                    username:"Hitman12355",
+                    password:"qwerty123456"
+                })
+            })
+            .then(resp=>resp.json())
+            .then(responce=>{
+                console.log(responce)
+                if(responce.status==='ok'){
+                    setSimilarMoviesData(responce.data.movies);
+                    setSimilarLoading(false);
+                }
+            })
+            .catch(err=>console.log("ERROR::",err))
+        }
+
+        
         setSimilarLoading(true);
         fetchSimilarMovies();
     },[data])
 
     //methods
     
-    async function fetchSimilarMovies(){
-        fetch("https://vpn-api.herokuapp.com/fetch",{
-            method:"POST",
-            headers:{
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin':"*"
-            },
-            body:JSON.stringify({
-                url:url_link + `movie_suggestions.json?movie_id=${data.id}`,
-                username:"Hitman12355",
-                password:"qwerty123456"
-            })
-        })
-        .then(resp=>resp.json())
-        .then(responce=>{
-            console.log(responce)
-            if(responce.status==='ok'){
-                setSimilarMoviesData(responce.data.movies);
-                setSimilarLoading(false);
-            }
-        })
-        .catch(err=>console.log("ERROR::",err))
-    }
+   
 
     const MovieView = ({ movie, index }) => {
         return (

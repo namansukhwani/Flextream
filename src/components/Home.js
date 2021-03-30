@@ -1,7 +1,7 @@
 import React, { useState, } from 'react';
 import {
     // useTheme,
-    makeStyles,
+    // makeStyles,
 
 } from '@material-ui/core';
 // import {AiFillInfoCircle} from 'react-icons/ai';
@@ -17,7 +17,7 @@ const url_link = "https://yts.mx/api/v2/";
 
 const Home = (props) => {
 
-    const styles = useStyles();
+    // const styles = useStyles();
     // const theme = useTheme
 
     // refs
@@ -179,32 +179,32 @@ const Home = (props) => {
 
 export default Home;
 
-const useStyles = makeStyles((theme) => ({
-    headingContainer: {
-        // width:"100%",
-        height: '45px',
-        display: 'flex',
-        flexDirection: 'row',
-        marginBottom: '10px',
-        padding: '15px',
-        alignItems:'center',
-        justifyContent:"space-between",
-        marginTop:'15px',
-    },
-    logo: {
-        width: "60px",
-        height: "60px",
-        marginRight: "5px",
-    },
-    heading: {
-        fontFamily: "Chilanka,cursive",
-        fontWeight: 'bold',
-        color: '#fff',
-        background: 'linear-gradient(to right top, #fc00ff, #00dbde);',
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: '10px 10px 0px 10px',
-        borderRadius: '13px',
-    },
-}))
+// const useStyles = makeStyles((theme) => ({
+//     headingContainer: {
+//         // width:"100%",
+//         height: '45px',
+//         display: 'flex',
+//         flexDirection: 'row',
+//         marginBottom: '10px',
+//         padding: '15px',
+//         alignItems:'center',
+//         justifyContent:"space-between",
+//         marginTop:'15px',
+//     },
+//     logo: {
+//         width: "60px",
+//         height: "60px",
+//         marginRight: "5px",
+//     },
+//     heading: {
+//         fontFamily: "Chilanka,cursive",
+//         fontWeight: 'bold',
+//         color: '#fff',
+//         background: 'linear-gradient(to right top, #fc00ff, #00dbde);',
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center",
+//         padding: '10px 10px 0px 10px',
+//         borderRadius: '13px',
+//     },
+// }))

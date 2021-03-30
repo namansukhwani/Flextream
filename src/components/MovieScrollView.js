@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
-    useTheme,
+    // useTheme,
     makeStyles,
     Container,
     Typography,
@@ -9,7 +9,7 @@ import {
     Tooltip,
 } from '@material-ui/core';
 import { AiFillFire, AiFillLeftCircle, AiFillRightCircle } from 'react-icons/ai'
-import { FiArrowLeftCircle, FiArrowRight } from 'react-icons/fi'
+import {  FiArrowRight } from 'react-icons/fi'
 import clsx from 'clsx';
 import { Skeleton } from '@material-ui/lab';
 import { NavLink } from 'react-router-dom';
@@ -19,7 +19,7 @@ const url_link = "https://yts.mx/api/v2/";
 
 const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleIcon = AiFillFire,togglelModal }) => {
     const styles = useStyles();
-    const theme = useTheme()
+    // const theme = useTheme()
 
     //refs
     const scrollDiv = useRef(0);
@@ -33,40 +33,41 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
 
     //lifecycle
     useEffect(() => {
+        async function fetchMostPopular() {
+            let url = new URL(url_link + 'list_movies.json')
+    
+            const params = parameters
+    
+            if (params != null) {
+                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+            }
+    
+            fetch("https://vpn-api.herokuapp.com/fetch",{
+                method:"POST",
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin':"*"
+                },
+                body:JSON.stringify({
+                    url:url,
+                    username:"Hitman12355",
+                    password:"qwerty123456"
+                })
+            })
+                .then(resp => resp.json())
+                .then(result => {
+                    // console.log(result);
+                    setData(result.data.movies);
+                    setisLoading(false)
+                })
+                .catch(err => console.log("ERROR::", err))
+        };
+    
         fetchMostPopular();
     }, [])
 
     //methods
-    async function fetchMostPopular() {
-        let url = new URL(url_link + 'list_movies.json')
-
-        const params = parameters
-
-        if (params != null) {
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-        }
-
-        fetch("https://vpn-api.herokuapp.com/fetch",{
-            method:"POST",
-            headers:{
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin':"*"
-            },
-            body:JSON.stringify({
-                url:url,
-                username:"Hitman12355",
-                password:"qwerty123456"
-            })
-        })
-            .then(resp => resp.json())
-            .then(result => {
-                // console.log(result);
-                setData(result.data.movies);
-                setisLoading(false)
-            })
-            .catch(err => console.log("ERROR::", err))
-    };
-
+   
     const handleScroll = (direction) => {
         if (direction === 'left') {
             // console.log(scrollDiv.current.offsetWidth)
@@ -83,13 +84,13 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
             <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "15px" }}
                 className={clsx({
                     [styles.paddingLeft]: index === 0,
-                    [styles.paddingRight]: index == data.length - 1
+                    [styles.paddingRight]: index === data.length - 1
                 })}
             >
                 <Tooltip title={movie.title} arrow placement="bottom">
                     <Paper onClick={()=>togglelModal(movie.id)} key={index.toString()} style={{ width: (largeDiv ? '230px' : '185px') }} className={styles.movieCon}>
                         <div style={{}}>
-                            <img src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                            <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                         </div>
                         <Container className={styles.titleCon}>
                             <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>

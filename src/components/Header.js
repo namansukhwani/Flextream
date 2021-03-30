@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {  } from 'react';
 import {
     AppBar,
     makeStyles,
@@ -12,15 +12,15 @@ import {
 
 } from '@material-ui/core';
 import { AiFillInfoCircle } from 'react-icons/ai';
-import { Category, ChevronLeft } from '@material-ui/icons';
+import { Category } from '@material-ui/icons';
 import { BsCollectionPlayFill, BsSearch } from 'react-icons/bs';
 import { BiHome } from 'react-icons/bi';
-import { TiThMenu as Menu } from 'react-icons/ti';
+// import { TiThMenu as Menu } from 'react-icons/ti';
 import { NavLink } from 'react-router-dom';
 
 function HideOnScroll(props) {
 
-    const { children, window } = props;
+    const { children } = props;
 
     const trigger = useScrollTrigger()
 
