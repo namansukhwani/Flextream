@@ -216,7 +216,7 @@ const VideoPlayer = (props) => {
                     <video
                         preload="auto"
                         url=""
-                        poster={state.background_image_original}
+                        poster={"https://vpn-api.herokuapp.com/fetch/image?url="+state.background_image_original}
                         controls={true}
                         ref={ref => playerRef.current = ref}
                         className={styles.play}

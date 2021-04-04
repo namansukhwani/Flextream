@@ -1,7 +1,7 @@
-import React,{} from 'react';
+import React, { } from 'react';
 
-const Search=(props)=>{
-    
+const Search = (props) => {
+
     //Refs
 
     //States
@@ -10,10 +10,10 @@ const Search=(props)=>{
 
     //methos
 
-    return(
-        <div>
-            Search
-        </div>
+    return (
+        <Container style={{ color: "#fff", justifyContent: "center", alignItems: "center", marginTop: '15%', textAlign: "center" }}>
+            <Typography variant="h3" component="h2">This feature is under development will be available soon :)</Typography>
+        </Container>
     );
 }
 
