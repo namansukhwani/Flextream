@@ -4,7 +4,8 @@ import {
     Tooltip,
     Paper,
     Container,
-    Typography
+    Typography,
+    CircularProgress
 } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -163,7 +164,7 @@ function ViewMore(props){
                 <Tooltip title={movie.title} arrow placement="bottom">
                     <Paper onClick={()=>handelModalOpen(movie.id)} key={index.toString()} className={styles.movieCon}>
                         <div style={{}}>
-                            <img src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                            <img  src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                         </div>
                         <Container className={styles.titleCon}>
                             <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -185,12 +186,16 @@ function ViewMore(props){
             </Container>
             {
                 isLoading ? 
-                null
+                <Container style={{display:"flex",justifyContent:"center",alignItems:'center',height:"100%",padding:'20px',marginTop:'13%'}} maxWidth="xl">
+                    <CircularProgress size={55} variant="indeterminate" style={{color:"#14efab"}} />
+                </Container>
                 :
                 <InfiniteScroll
                     dataLength={data.length}
                     hasMore={true}
-                    loader={<h4>Loading...</h4>}
+                    loader={ <Container style={{display:"flex",justifyContent:"center",alignItems:'center',padding:'25px'}} maxWidth="xl">
+                                <CircularProgress size={55} variant="indeterminate" style={{color:"#14efab"}} />
+                            </Container>}
                     // scrollableTarget="scrollDiv"
                     style={{paddingInline:"15px",display:'flex',flexDirection:"row",flexWrap:"wrap",justifyContent:"space-around"}}
                     next={fetchMoreData}
