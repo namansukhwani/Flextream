@@ -36,7 +36,7 @@ function CircularProgressWithLabel(props) {
 const VideoPlayer = (props) => {
     const styles = useStyles()
     const { state } = useLocation();
-    const WebTorrent = require('webtorrent');
+    const WebTorrent = require('webtorrent-hybrid');
 
     const trackers = [
         'udp://glotorrents.pw:6969/announce',
@@ -81,6 +81,8 @@ const VideoPlayer = (props) => {
     const playerRef = useRef(0)
 
     //states
+    const [client, setClient] = useState(new WebTorrent())
+    const [torrent, setTorrent] = useState(null)
     const [loading, setLoading] = useState(false);
     const [progress, setProgress] = useState(0);
     const [movieQualityIndex, setMovieQualityIndex] = useState(0);
@@ -159,6 +161,15 @@ const VideoPlayer = (props) => {
     }, [])
     
     //methods
+
+    async function loadMovie(){
+
+    }
+
+    async function destroyMovie(){
+
+    }
+
     async function selectMoviequality(){
         const tempArr=[]
         state.torrents.forEach((data)=>{

@@ -111,7 +111,7 @@ const RecentlyAddedList = (props) => {
                     <Container maxWidth="xl" className={styles.movieDetails}>
                         <Typography className={styles.movieTitle} variant="h4" component="h2">{movie.title}</Typography>
                         <Typography className={styles.movieSubtitle} >
-                            {movie.year + " . " + Languages[movie.language] + " . " + String(movie.runtime) + " min . " + movie.genres.map((genre) => { return String(genre) + " " })}
+                            {movie.year + " . " + Languages[movie.language] + " . " + String(movie.runtime) + " min . " + `${movie['genres'] &&  movie.genres.map((genre) => { return String(genre) + " " })}`}
                         </Typography>
                         <div style={{ width: "60%", height: '110px', overflow: "hidden", textOverflow: 'ellipsis', lineHeight: "20px", marginBottom: "10px" }}>
                             <Typography className={styles.movieDescription}>{movie.description_intro}</Typography>
