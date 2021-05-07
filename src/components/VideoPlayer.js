@@ -50,22 +50,22 @@ const VideoPlayer = (props) => {
         "wss://tracker.fastcast.nz",
         "wss://tracker.fastcast.nz",
         "wss://tracker.openwebtorrent.com",
-        // "wss://tracker.webtorrent.io",
-        // 'udp://p4p.arenabg.ch:1337',
-        // 'udp://tracker.internetwarriors.net:1337',
-        // "http://tracker2.wasabii.com.tw:6969/announce",
-        // "udp://tracker.sktorrent.net:6969/announce",
-        // "http://www.wareztorrent.com:80/announce",
-        // "udp://bt.xxx-tracker.com:2710/announce",
-        // "udp://tracker.eddie4.nl:6969/announce",   
-        // "udp://tracker.grepler.com:6969/announce",
-        // "udp://tracker.mg64.net:2710/announce",
-        // "udp://wambo.club:1337/announce",
-        // "udp://tracker.dutchtracking.com:6969/announce",
-        // "udp://tc.animereactor.ru:8082/announce",
-        // "http://umunu.com:1984/announce",
-        // "http://www.mvgroup.org:2710/announce",
-        // "http://www.torrent-downloads.to:2710/announce",
+        "wss://tracker.webtorrent.io",
+        'udp://p4p.arenabg.ch:1337',
+        'udp://tracker.internetwarriors.net:1337',
+        "http://tracker2.wasabii.com.tw:6969/announce",
+        "udp://tracker.sktorrent.net:6969/announce",
+        "http://www.wareztorrent.com:80/announce",
+        "udp://bt.xxx-tracker.com:2710/announce",
+        "udp://tracker.eddie4.nl:6969/announce",   
+        "udp://tracker.grepler.com:6969/announce",
+        "udp://tracker.mg64.net:2710/announce",
+        "udp://wambo.club:1337/announce",
+        "udp://tracker.dutchtracking.com:6969/announce",
+        "udp://tc.animereactor.ru:8082/announce",
+        "http://umunu.com:1984/announce",
+        "http://www.mvgroup.org:2710/announce",
+        "http://www.torrent-downloads.to:2710/announce",
     ]
     // console.log(state);
 
@@ -74,8 +74,8 @@ const VideoPlayer = (props) => {
         tracker: trackers, // Enable trackers (default=true), or options object for Tracker
     }
 
-    const torrentOptions={
-        announce:trackers
+    const torrentOptions = {
+        announce: trackers
     }
     //refs
     const playerRef = useRef(0)
@@ -89,14 +89,14 @@ const VideoPlayer = (props) => {
     //lifecycle
     useEffect(() => {
         var client = new WebTorrent(config);
-        async function run(){
-            let index=await selectMoviequality()
+        async function run() {
+            let index = await selectMoviequality()
             // console.log(index);
-    
+
             client.on('error', err => {
                 console.log('Webtorrent Error::', err);
             })
-    
+
             // const interval = setInterval(() => { 
             //     console.log(`${client.progress * 100}%`);
             //     console.log("download Speed",client.downloadSpeed/125);
@@ -105,68 +105,68 @@ const VideoPlayer = (props) => {
             //         setProgress(client.progress * 100);
             //     }
             // }, 5000)
-    
-            client.add(state.torrents[index].hash,torrentOptions, torrent => {
+
+            client.add(state.torrents[index].hash, torrentOptions, torrent => {
                 console.log("torrent started");
-                
-                setInterval(() => { 
-                    if(torrent.progress!==0){
+
+                setInterval(() => {
+                    if (torrent.progress !== 0) {
                         setProgress(torrent.progress * 100);
                     }
-                    if(torrent.downloadSpeed!==0){
-                        setDownloadSpeed(torrent.downloadSpeed/125)
+                    if (torrent.downloadSpeed !== 0) {
+                        setDownloadSpeed(torrent.downloadSpeed / 125)
                     }
                     console.log(`${torrent.progress * 100}%`);
-                    console.log(torrent.downloadSpeed/125)
+                    console.log(torrent.downloadSpeed / 125)
                 }, 5000)
-    
+
                 torrent.on('done', () => {
                     console.log("Torrent complete 100%");
                     // clearInterval(interval)
                 })
-                
-                torrent.on('warning',(err)=>{
+
+                torrent.on('warning', (err) => {
                     console.log(err);
                 })
-    
+
                 console.log(torrent.downloaded)
-    
-                torrent.on('metadata',()=>{
+
+                torrent.on('metadata', () => {
                     console.log("metadeta downloded");
                 })
                 settorrentFiles(torrent.files)
-    
+
                 // var mp4File = torrentFiles.find(function (file) {
                 //     return file.name.endsWith('.mp4');
-                    
+
                 // });
                 // setLoading(false);
-    
+
                 // console.log(mp4File);
                 console.log(torrent.files);
-                var file=torrent.files[0]
+                var file = torrent.files[0]
                 file.renderTo(playerRef.current)
-    
+
             })
         }
         // console.log("lund");
         run()
 
-        return()=>{
+        return () => {
             // clearInterval(interval)
             client.destroy()
         }
     }, [])
-    
+
     //methods
-    async function selectMoviequality(){
-        const tempArr=[]
-        state.torrents.forEach((data)=>{
+    async function selectMoviequality() {
+        const tempArr = []
+        state.torrents.forEach((data) => {
             // console.log(data.seeds);
             tempArr.push(data.seeds)
         })
 
-        let i=tempArr.indexOf(Math.max(...tempArr))
+        let i = tempArr.indexOf(Math.max(...tempArr))
 
         // console.log("index of highest seed movie",i);
         setMovieQualityIndex(i)
@@ -175,10 +175,15 @@ const VideoPlayer = (props) => {
 
     return (
         <div className={styles.mainDiv}>
+            <div style={{alignSelf: 'flex-start', marginTop: "-60px",marginLeft:'20px'}}>
+            <Typography  style={{color:"#fff",fontWeight:'bold'}} >Download Speed</Typography>
+            <Typography style={{ color: "#eee" }}>{`${downloadSpeed.toFixed(2)} kbps`}</Typography>
+            </div>
+            
+
             <Container maxWidth="xl" className={styles.header}>
                 <Typography noWrap className={styles.movieName} variant="h5" >{state.title}</Typography>
                 <div className={styles.headerIcons} >
-                    <Typography style={{color:"#fff"}}>{`${downloadSpeed.toFixed(2)} kbps`}</Typography>
 
                     <ToggleButtonGroup
                         exclusive
@@ -192,7 +197,7 @@ const VideoPlayer = (props) => {
                         style={{ height: '35px', marginRight: "15px", }}
                     >
                         {state.torrents.map((data, index) => {
-                            if(data.quality==='3D') return
+                            if (data.quality === '3D') return
                             // console.log(index);
                             return (
                                 <ToggleButton
@@ -216,7 +221,7 @@ const VideoPlayer = (props) => {
                     <video
                         preload="auto"
                         url=""
-                        poster={"https://vpn-api.herokuapp.com/fetch/image?url="+state.background_image_original}
+                        poster={"https://vpn-api.herokuapp.com/fetch/image?url=" + state.background_image_original}
                         controls={true}
                         ref={ref => playerRef.current = ref}
                         className={styles.play}
@@ -270,8 +275,8 @@ const useStyles = makeStyles({
         "&:active,focus": {
             outline: "none",
         },
-        "&:fullscreen":{
-            objectFit:"contain"
+        "&:fullscreen": {
+            objectFit: "contain"
         }
     },
     movieName: {

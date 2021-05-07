@@ -16,62 +16,102 @@ import {
 import { } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 import { Languages } from '../Data/languages';
-import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar } from 'react-icons/ai';
+import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar, AiOutlineDownload } from 'react-icons/ai';
+import { FaMagnet } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 
 const url_link = "https://yts.mx/api/v2/";
+const trackers=`&tr=${encodeURIComponent('udp://open.demonii.com:1337/announce')}&tr=${encodeURIComponent('udp://tracker.openbittorrent.com:80')}&tr=${encodeURIComponent('udp://tracker.coppersurfer.tk:6969')}&tr=${encodeURIComponent('udp://glotorrents.pw:6969/announce')}&tr=${encodeURIComponent('udp://tracker.opentrackr.org:1337/announce')}&tr=${encodeURIComponent('udp://torrent.gresille.org:80/announce')}&tr=${encodeURIComponent('udp://p4p.arenabg.com:1337')}&tr=${encodeURIComponent('udp://tracker.leechers-paradise.org:6969')}`
 
-function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, handelModalClose,handelSimilarMovie}) {
+function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoading = true, handelModalClose, handelSimilarMovie }) {
 
     const styles = useStyles();
 
     // states
     const [similarLoading, setSimilarLoading] = useState(true)
     const [similarMoviesData, setSimilarMoviesData] = useState([])
+    const [isDownloadModalOpen, setisDownloadModalOpen] = useState(false)
+    const [magnetLinks, setmagnetLinks] = useState([]);
 
     //lifecycle
-    useEffect(()=>{
-        async function fetchSimilarMovies(){
-            fetch("https://vpn-api.herokuapp.com/fetch",{
-                method:"POST",
-                headers:{
+    useEffect(() => {
+        async function fetchSimilarMovies() {
+            fetch("https://vpn-api.herokuapp.com/fetch", {
+                method: "POST",
+                headers: {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin':"*"
+                    'Access-Control-Allow-Origin': "*"
                 },
-                body:JSON.stringify({
-                    url:url_link + `movie_suggestions.json?movie_id=${data.id}`,
-                    username:"Hitman12355",
-                    password:"qwerty123456"
+                body: JSON.stringify({
+                    url: url_link + `movie_suggestions.json?movie_id=${data.id}`,
+                    username: "Hitman12355",
+                    password: "qwerty123456"
                 })
             })
-            .then(resp=>resp.json())
-            .then(responce=>{
-                console.log(responce)
-                if(responce.status==='ok'){
-                    setSimilarMoviesData(responce.data.movies);
-                    setSimilarLoading(false);
-                }
-            })
-            .catch(err=>console.log("ERROR::",err))
+                .then(resp => resp.json())
+                .then(responce => {
+                    console.log(responce)
+                    if (responce.status === 'ok') {
+                        setSimilarMoviesData(responce.data.movies);
+                        setSimilarLoading(false);
+                    }
+                })
+                .catch(err => console.log("ERROR::", err))
         }
 
-        
+
         setSimilarLoading(true);
         fetchSimilarMovies();
-    },[data])
+        createMagnetLinks();
+    }, [data])
 
     //methods
-    
-   
+    const createMagnetLinks = () => {
+        try{
+            const tempList=data.torrents.map(torrent=>{
+                return `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(data.title)}${trackers}`
+            })
+            setmagnetLinks(tempList);
+        }
+        catch(err){
+            // console.log(err);
+        }
+    }
+
+    const DownloadView = ({ torrent, index }) => {
+        return (
+            <>
+                <Grid container={true} style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", }}>
+                    <Typography style={{ fontWeight: "bold", color: '#fff' }}>{torrent.quality}</Typography>
+                    <Grid>
+                        <Button
+                            variant="contained"
+                            style={{ width: "min-content", }}
+                            size="small"
+                            // onClick={() => { }}
+                            href={torrent.url}
+                        >
+                            <AiOutlineDownload style={{ color: '#000', alignSelf: "flex-end" }} size={25} />
+                        </Button>
+                        <IconButton href={magnetLinks[index]} style={{ marginLeft: '10px' }}>
+                            <FaMagnet style={{ color: "green" }} size={25} />
+                        </IconButton>
+                    </Grid>
+
+                </Grid>
+                {data.torrents.length !== index + 1 && <div style={{ height: "1px", borderRadius: '5px', background: "#ffffff30", marginTop: '10px' }} />}
+            </>
+        )
+    }
 
     const MovieView = ({ movie, index }) => {
         return (
             <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
                 <Tooltip title={movie.title} arrow placement="bottom">
-                    <Paper onClick={()=>{handelSimilarMovie(movie.id)}} key={index.toString()} className={styles.movieCon}>
+                    <Paper onClick={() => { handelSimilarMovie(movie.id) }} key={index.toString()} className={styles.movieCon}>
                         <div style={{}}>
-                            <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                            <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                         </div>
                         <Container className={styles.titleCon}>
                             <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -92,7 +132,7 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
             closeAfterTransition={true}
         // disableBackdropClick={true}
         >
-            <Fade in={isModalOpen}>
+            <Fade in={isModalOpen} >
                 <Container className={styles.mainContainer} maxWidth="md">
                     <IconButton onClick={() => handelModalClose(!isModalOpen)} className={styles.cancelButton}>
                         <MdCancel style={{ color: "#fff" }} size={35} />
@@ -114,7 +154,7 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
                                 >
                                     {
                                         [data.large_screenshot_image1, data.large_screenshot_image2, data.large_screenshot_image3].map((image, index) => {
-                                            return <img alt="" key={index} src={"https://vpn-api.herokuapp.com/fetch/image?url="+image} className={styles.imageStyle} />
+                                            return <img alt="" key={index} src={"https://vpn-api.herokuapp.com/fetch/image?url=" + image} className={styles.imageStyle} />
                                         })
                                     }
                                 </Carousel>
@@ -123,33 +163,46 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
                             </Container>
                             <Container maxWidth="xl" className={styles.titleDiv}>
                                 <Paper elevation={10} className={styles.posterDiv}>
-                                    <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url="+data.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                                    <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url=" + data.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                                 </Paper>
                                 <div style={{ paddingInline: '15px', display: "flex", flexDirection: "column" }}>
-                                    <div style={{ marginBottom: '15px', display: "flex" }}>
-                                        <Button
-                                            variant="contained"
-                                            style={{ marginRight: '15px', width: "min-content", zIndex: 20, marginBottom: "15px" }}
-                                            size="large"
-                                            startIcon={<AiFillPlayCircle style={{ color: "#000" }} />}
-                                        component={NavLink}
-                                        to={{
-                                            pathname:`/videoPlayer/${data.id}`,
-                                            state:data
-                                        }}
-                                        >
-                                            Play
-                                        </Button>
-                                        <Button
-                                            variant="outlined"
-                                            style={{ color: "#fff", zIndex: 20, borderColor: "#fff", marginBottom: "15px" }}
-                                            size="large"
-                                            startIcon={<AiFillPlusCircle style={{ color: "#fff" }} />}
-                                        >
-                                            Add to My list
-                                        </Button>
-
-                                    </div>
+                                    <Grid container style={{ marginBottom: '15px', display: "flex" }}>
+                                        <Grid md={4} xs={12}>
+                                            <Button
+                                                variant="contained"
+                                                style={{ marginRight: '15px', width: "min-content", zIndex: 20, marginBottom: "15px" }}
+                                                size="large"
+                                                startIcon={<AiFillPlayCircle style={{ color: "#000" }} />}
+                                                component={NavLink}
+                                                to={{
+                                                    pathname: `/videoPlayer/${data.id}`,
+                                                    state: data
+                                                }}
+                                            >
+                                                Play
+                                            </Button>
+                                        </Grid>
+                                        <Grid md={7} xs={12} style={{}}>
+                                            <Button
+                                                variant="outlined"
+                                                style={{ color: "#fff", alignSelf: "center", zIndex: 20, borderColor: "#fff", marginBottom: "15px", }}
+                                                size="large"
+                                                startIcon={<AiFillPlusCircle style={{ color: "#fff" }} />}
+                                            >
+                                                Add to My list
+                                            </Button>
+                                        </Grid>
+                                        <Grid md={1} xs={12}>
+                                            <Button
+                                                variant="contained"
+                                                style={{ width: "min-content", zIndex: 20, marginBottom: "15px" }}
+                                                size="small"
+                                                onClick={() => { setisDownloadModalOpen(true) }}
+                                            >
+                                                <AiOutlineDownload style={{ color: '#000' }} size={35} />
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
 
                                     <Typography className={styles.movieTitle} variant="h4" component="h2">{data.title}</Typography>
                                     <Typography className={styles.movieSubtitle} >
@@ -171,7 +224,7 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
                                         {data.cast.map((data, index) => {
                                             return <div key={index} className={styles.castBox}>
                                                 <Grid md={3}>
-                                                    <Avatar alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url="+data.url_small_image} />
+                                                    <Avatar alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url=" + data.url_small_image} />
                                                 </Grid>
                                                 <Grid md={9}>
                                                     <Typography noWrap style={{ color: '#fff', marginLeft: "10px", fontSize: "18px" }}>{data.name}</Typography>
@@ -186,24 +239,46 @@ function DetailedMovieView({ isModalOpen = false, data = {}, isLoading = true, h
                             <Container maxWidth="xl">
                                 <Typography variant="h6" style={{ marginBottom: '10px', color: "#fff" }}>Similar Movies</Typography>
                             </Container>
-                            <div style={{paddingBottom:'28px'}}>
+                            <div style={{ paddingBottom: '28px' }}>
                                 {similarLoading ?
-                                    <Container style={{display:'flex',justifyContent:"center",alignItems:"center"}} maxWidth="xl">
+                                    <Container style={{ display: 'flex', justifyContent: "center", alignItems: "center" }} maxWidth="xl">
                                         <CircularProgress style={{ color: '#fff' }} size={60} />
                                     </Container>
                                     :
                                     <Container className={styles.similarDiv} maxWidth="xl">
-                                        {similarMoviesData.map((movie,index)=>{
+                                        {similarMoviesData.map((movie, index) => {
                                             return <MovieView key={index} movie={movie} index={index} />
                                         })}
-                                    </Container>        
+                                    </Container>
                                 }
                             </div>
+                            <Modal
+                        open={isDownloadModalOpen}
+                        onClose={() => setisDownloadModalOpen(!isDownloadModalOpen)}
+                        className={styles.modal}
+                        style={{ outline: 0 }}
+                        closeAfterTransition={true}
+                    >
+                        <Fade in={isDownloadModalOpen} >
+                            <Container maxWidth="xs" className={styles.mainContainer} style={{ height: 'auto', padding: '15px' }}>
+                                <IconButton onClick={() => setisDownloadModalOpen(!isDownloadModalOpen)} className={styles.cancelButton}>
+                                    <MdCancel style={{ color: "#fff" }} size={35} />
+                                </IconButton>
+                                <Typography className={styles.movieTitle} style={{ marginBottom: '15px' }} variant="h5" component="h2">{data.title}</Typography>
+                               {
+                                data.torrents.map((torrent, index) => {
+                                    return <DownloadView key={index.toString()} torrent={torrent} index={index} />
+                                })}
+                            </Container>
+                        </Fade>
+                    </Modal>
                         </>
                     }
                 </Container>
             </Fade>
+
         </Modal>
+
         // </div>
     );
 }
@@ -321,8 +396,8 @@ const useStyles = makeStyles({
         flexDirection: "column",
         backdropFilter: "blur(20px)",
         alignItems: 'center',
-        height:"max-content",
-        padding:'15px'
+        height: "max-content",
+        padding: '15px'
     },
     castBox: {
         display: "flex",
@@ -332,18 +407,18 @@ const useStyles = makeStyles({
         marginTop: "10px",
         width: "100%"
     },
-    line:{
-        height:"1px",
-        borderRadius:'5px',
-        background:"#ffffff30",
-        marginInline:"25px !important",
-        margin:'15px'
+    line: {
+        height: "1px",
+        borderRadius: '5px',
+        background: "#ffffff30",
+        marginInline: "25px !important",
+        margin: '15px'
     },
-    similarDiv:{
-        display:'flex',
-        flexDirection:"row",
-        flexWrap:"wrap",
-        justifyContent:"space-around"
+    similarDiv: {
+        display: 'flex',
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-around"
     },
     movieCon: {
         width: "180px",
@@ -363,10 +438,10 @@ const useStyles = makeStyles({
         width: "100%",
         height: "40px",
         display: 'flex',
-        background:"#00000050",
+        background: "#00000050",
         justifyContent: "center",
         alignItems: "center",
-        borderRadius:"10px"
+        borderRadius: "10px"
     },
     movieName: {
         color: "#fff",
