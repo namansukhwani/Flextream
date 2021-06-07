@@ -3,23 +3,23 @@
   "name": "Flextream",
   "icons": [
     {
-      "src": "Flogo.png",
+      "src": "assets/FLogo.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "Flogo.png",
+      "src": "assets/FLogo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "Flogo.png",
+      "src": "assets/FLogo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "display": "minimal-ui",
+  "theme_color": "#181b25",
+  "background_color": "#181b25"
 }

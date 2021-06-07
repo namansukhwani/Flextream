@@ -22,9 +22,9 @@ import { MdCancel } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 
 const url_link = "https://yts.mx/api/v2/";
-const trackers=`&tr=${encodeURIComponent('udp://open.demonii.com:1337/announce')}&tr=${encodeURIComponent('udp://tracker.openbittorrent.com:80')}&tr=${encodeURIComponent('udp://tracker.coppersurfer.tk:6969')}&tr=${encodeURIComponent('udp://glotorrents.pw:6969/announce')}&tr=${encodeURIComponent('udp://tracker.opentrackr.org:1337/announce')}&tr=${encodeURIComponent('udp://torrent.gresille.org:80/announce')}&tr=${encodeURIComponent('udp://p4p.arenabg.com:1337')}&tr=${encodeURIComponent('udp://tracker.leechers-paradise.org:6969')}`
+const trackers = `&tr=${encodeURIComponent('udp://open.demonii.com:1337/announce')}&tr=${encodeURIComponent('udp://tracker.openbittorrent.com:80')}&tr=${encodeURIComponent('udp://tracker.coppersurfer.tk:6969')}&tr=${encodeURIComponent('udp://glotorrents.pw:6969/announce')}&tr=${encodeURIComponent('udp://tracker.opentrackr.org:1337/announce')}&tr=${encodeURIComponent('udp://torrent.gresille.org:80/announce')}&tr=${encodeURIComponent('udp://p4p.arenabg.com:1337')}&tr=${encodeURIComponent('udp://tracker.leechers-paradise.org:6969')}`
 
-function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoading = true, handelModalClose, handelSimilarMovie }) {
+function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoading = true, handelModalClose, handelSimilarMovie }) {
 
     const styles = useStyles();
 
@@ -51,7 +51,7 @@ function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoadin
             })
                 .then(resp => resp.json())
                 .then(responce => {
-                    console.log(responce)
+                    // console.log(responce)
                     if (responce.status === 'ok') {
                         setSimilarMoviesData(responce.data.movies);
                         setSimilarLoading(false);
@@ -68,15 +68,33 @@ function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoadin
 
     //methods
     const createMagnetLinks = () => {
-        try{
-            const tempList=data.torrents.map(torrent=>{
+        try {
+            const tempList = data.torrents.map(torrent => {
                 return `magnet:?xt=urn:btih:${torrent.hash}&dn=${encodeURIComponent(data.title)}${trackers}`
             })
             setmagnetLinks(tempList);
         }
-        catch(err){
+        catch (err) {
             // console.log(err);
         }
+    }
+
+    function bytesToSize(bytes) {
+        var marker = 1024; // Change to 1000 if required
+        var decimal = 2; // Change as required
+        var kiloBytes = marker; // One Kilobyte is 1024 bytes
+        var megaBytes = marker * marker; // One MB is 1024 KB
+        var gigaBytes = marker * marker * marker; // One GB is 1024 MB
+        var teraBytes = marker * marker * marker * marker; // One TB is 1024 GB
+
+        // return bytes if less than a KB
+        if (bytes < kiloBytes) return bytes + " Bytes";
+        // return KB if less than a MB
+        else if (bytes < megaBytes) return (bytes / kiloBytes).toFixed(decimal) + " KB";
+        // return MB if less than a GB
+        else if (bytes < gigaBytes) return (bytes / megaBytes).toFixed(decimal) + " MB";
+        // return GB if less than a TB
+        else return (bytes / gigaBytes).toFixed(decimal) + " GB";
     }
 
     const DownloadView = ({ torrent, index }) => {
@@ -84,10 +102,11 @@ function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoadin
             <>
                 <Grid container={true} style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", }}>
                     <Typography style={{ fontWeight: "bold", color: '#fff' }}>{torrent.quality}</Typography>
-                    <Grid>
+                    <Grid style={{ display: "flex", flexDirection: "row", }}>
+                        <Typography style={{ color: '#fff', alignSelf: "center", marginRight: '10px' }}>{bytesToSize(torrent.size_bytes)}</Typography>
                         <Button
                             variant="contained"
-                            style={{ width: "min-content", }}
+                            style={{ width: "min-content", height: 'min-content', alignSelf: "center" }}
                             size="small"
                             // onClick={() => { }}
                             href={torrent.url}
@@ -162,15 +181,18 @@ function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoadin
 
                             </Container>
                             <Container maxWidth="xl" className={styles.titleDiv}>
-                                <Paper elevation={10} className={styles.posterDiv}>
-                                    <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url=" + data.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
-                                </Paper>
-                                <div style={{ paddingInline: '15px', display: "flex", flexDirection: "column" }}>
-                                    <Grid container style={{ marginBottom: '15px', display: "flex" }}>
-                                        <Grid md={4} xs={12}>
+                                <Grid item sm={12} md={3} style={{ zIndex: 20 }}>
+                                    <Paper elevation={10} className={styles.posterDiv}>
+                                        <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url=" + data.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                                    </Paper>
+                                </Grid>
+
+                                <Grid item sm={12} md={10} direction="column" style={{ paddingInline: '15px', display: "flex", flexDirection: "column" }}>
+                                    <Grid md={12} justify="flex-start" direction="row" container style={{ width: 'max-content', marginBottom: '15px' }} >
+                                        < Grid xs={12} md={4} item>
                                             <Button
                                                 variant="contained"
-                                                style={{ marginRight: '15px', width: "min-content", zIndex: 20, marginBottom: "15px" }}
+                                                style={{ width: "min-content", zIndex: 20, marginBottom: "15px" }}
                                                 size="large"
                                                 startIcon={<AiFillPlayCircle style={{ color: "#000" }} />}
                                                 component={NavLink}
@@ -182,7 +204,7 @@ function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoadin
                                                 Play
                                             </Button>
                                         </Grid>
-                                        <Grid md={7} xs={12} style={{}}>
+                                        <Grid xs={12} md={7} style={{}} item>
                                             <Button
                                                 variant="outlined"
                                                 style={{ color: "#fff", alignSelf: "center", zIndex: 20, borderColor: "#fff", marginBottom: "15px", }}
@@ -192,7 +214,7 @@ function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoadin
                                                 Add to My list
                                             </Button>
                                         </Grid>
-                                        <Grid md={1} xs={12}>
+                                        <Grid xs={12} md={1} item>
                                             <Button
                                                 variant="contained"
                                                 style={{ width: "min-content", zIndex: 20, marginBottom: "15px" }}
@@ -203,13 +225,12 @@ function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoadin
                                             </Button>
                                         </Grid>
                                     </Grid>
-
                                     <Typography className={styles.movieTitle} variant="h4" component="h2">{data.title}</Typography>
                                     <Typography className={styles.movieSubtitle} >
                                         {data.year + " . " + Languages[data.language] + " . " + String(data.runtime) + " min . " + data.genres.map((genre) => { return String(genre) + " " })}
                                     </Typography>
                                     <Typography className={styles.rating}>{`${data.rating}/10 `}<AiFillStar style={{ color: "#ffd700" }} /></Typography>
-                                </div>
+                                </Grid>
                             </Container>
                             <Grid container spacing={2} className={styles.summaryDiv}>
                                 <Grid md={8} xs={12}>
@@ -253,31 +274,31 @@ function DetailedMovieView({ isModalOpen = false, data = {torrents:[]}, isLoadin
                                 }
                             </div>
                             <Modal
-                        open={isDownloadModalOpen}
-                        onClose={() => setisDownloadModalOpen(!isDownloadModalOpen)}
-                        className={styles.modal}
-                        style={{ outline: 0 }}
-                        closeAfterTransition={true}
-                    >
-                        <Fade in={isDownloadModalOpen} >
-                            <Container maxWidth="xs" className={styles.mainContainer} style={{ height: 'auto', padding: '15px' }}>
-                                <IconButton onClick={() => setisDownloadModalOpen(!isDownloadModalOpen)} className={styles.cancelButton}>
-                                    <MdCancel style={{ color: "#fff" }} size={35} />
-                                </IconButton>
-                                <Typography className={styles.movieTitle} style={{ marginBottom: '15px' }} variant="h5" component="h2">{data.title}</Typography>
-                               {
-                                data.torrents.map((torrent, index) => {
-                                    return <DownloadView key={index.toString()} torrent={torrent} index={index} />
-                                })}
-                            </Container>
-                        </Fade>
-                    </Modal>
+                                open={isDownloadModalOpen}
+                                onClose={() => setisDownloadModalOpen(!isDownloadModalOpen)}
+                                className={styles.modal}
+                                style={{ outline: 0 }}
+                                closeAfterTransition={true}
+                            >
+                                <Fade in={isDownloadModalOpen} >
+                                    <Container maxWidth="xs" className={styles.mainContainer} style={{ height: 'auto', padding: '15px' }}>
+                                        <IconButton onClick={() => setisDownloadModalOpen(!isDownloadModalOpen)} className={styles.cancelButton}>
+                                            <MdCancel style={{ color: "#fff" }} size={35} />
+                                        </IconButton>
+                                        <Typography className={styles.movieTitle} style={{ marginBottom: '15px' }} variant="h5" component="h2">{data.title}</Typography>
+                                        {
+                                            data.torrents.map((torrent, index) => {
+                                                return <DownloadView key={index.toString()} torrent={torrent} index={index} />
+                                            })}
+                                    </Container>
+                                </Fade>
+                            </Modal>
                         </>
                     }
                 </Container>
-            </Fade>
+            </Fade >
 
-        </Modal>
+        </Modal >
 
         // </div>
     );
@@ -353,12 +374,14 @@ const useStyles = makeStyles({
         background: "#ffffff30",
         padding: 6,
         width: "190px",
+        minWidth: "130px",
         backdropFilter: "blur(20px)"
     },
     movieTitle: {
         color: "#fff",
         fontWeight: "500",
-        zIndex: 20
+        zIndex: 20,
+        width: "max-content"
     },
     movieSubtitle: {
         fontSize: '14px',

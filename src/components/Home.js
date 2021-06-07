@@ -7,10 +7,10 @@ import {
 // import {AiFillInfoCircle} from 'react-icons/ai';
 import RecentlyAddedList from './RecentAddedHome';
 import MovieScrollView from './MovieScrollView';
-import {FaStar,FaLaughSquint,FaGhost} from 'react-icons/fa'
-import {AiFillHeart} from 'react-icons/ai'
-import {BsMusicNoteBeamed} from 'react-icons/bs'
-import {GiDramaMasks,GiMagicGate} from 'react-icons/gi'
+import { FaStar, FaLaughSquint, FaGhost } from 'react-icons/fa'
+import { AiFillHeart } from 'react-icons/ai'
+import { BsMusicNoteBeamed } from 'react-icons/bs'
+import { GiDramaMasks, GiMagicGate } from 'react-icons/gi'
 import DetailedMovieView from './DetailedMovieView';
 
 const url_link = "https://yts.mx/api/v2/";
@@ -28,45 +28,45 @@ const Home = (props) => {
     const [modalIsLoading, setmodalIsLoading] = useState(true);
 
     //lifecycle
-  
+
     //methods
-    function handelModalOpen(movieId){
+    function handelModalOpen(movieId) {
         fetchMovieDetails(movieId)
-        setisModalOpen(!isModalOpen)  
+        setisModalOpen(!isModalOpen)
     }
 
-    function handelModalClose(modalValue){
+    function handelModalClose(modalValue) {
         setisModalOpen(modalValue);
         setmodalIsLoading(true);
     }
 
-    function handelSimilarMovie(newMovieId){
+    function handelSimilarMovie(newMovieId) {
         setmodalIsLoading(true);
         fetchMovieDetails(newMovieId);
     }
-    
-    async function fetchMovieDetails(movieId){
-        fetch("https://vpn-api.herokuapp.com/fetch",{
-            method:"POST",
-            headers:{
+
+    async function fetchMovieDetails(movieId) {
+        fetch("https://vpn-api.herokuapp.com/fetch", {
+            method: "POST",
+            headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin':"*"
+                'Access-Control-Allow-Origin': "*"
             },
-            body:JSON.stringify({
-                url:url_link + `movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
-                username:"Hitman12355",
-                password:"qwerty123456"
+            body: JSON.stringify({
+                url: url_link + `movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
+                username: "Hitman12355",
+                password: "qwerty123456"
             })
         })
-        .then(resp=>resp.json())
-        .then(responce=>{
-            console.log(responce)
-            if(responce.status==='ok'){
-                setSelectedMovieData(responce.data.movie);
-                setmodalIsLoading(false);
-            }
-        })
-        .catch(err=>console.log("ERROR::",err))
+            .then(resp => resp.json())
+            .then(responce => {
+                // console.log(responce)
+                if (responce.status === 'ok') {
+                    setSelectedMovieData(responce.data.movie);
+                    setmodalIsLoading(false);
+                }
+            })
+            .catch(err => console.log("ERROR::", err))
     }
 
     return (
@@ -77,23 +77,23 @@ const Home = (props) => {
                 </Typography>
                 <AiFillInfoCircle style={{color:'#fff'}} size={33} onClick={()=>{}}/>
             </Container> */}
-            <RecentlyAddedList/>
-            <MovieScrollView 
+            <RecentlyAddedList />
+            <MovieScrollView
                 parameters={{
                     limit: 16,
                     sort_by: 'like_count',
-                    minimum_rating:0,
-                    genre:'',
+                    minimum_rating: 0,
+                    genre: '',
                 }}
                 title="Most Popular Movies"
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
                 parameters={{
-                    limit:20,
-                    sort_by:'rating',
-                    minimum_rating:0,
-                    genre:'',
+                    limit: 20,
+                    sort_by: 'rating',
+                    minimum_rating: 0,
+                    genre: '',
                 }}
                 title="Top Rated Movies"
                 largeDiv={true}
@@ -102,10 +102,10 @@ const Home = (props) => {
             />
             <MovieScrollView
                 parameters={{
-                    limit:15,
-                    genre:'Comedy',
-                    sort_by:"like_count",
-                    minimum_rating:0,
+                    limit: 15,
+                    genre: 'Comedy',
+                    sort_by: "like_count",
+                    minimum_rating: 0,
                 }}
                 title="Popular in Comedy"
                 TitleIcon={FaLaughSquint}
@@ -113,10 +113,10 @@ const Home = (props) => {
             />
             <MovieScrollView
                 parameters={{
-                    limit:15,
-                    genre:'Romance',
-                    sort_by:"download_count",
-                    minimum_rating:0,
+                    limit: 15,
+                    genre: 'Romance',
+                    sort_by: "download_count",
+                    minimum_rating: 0,
                 }}
                 title="Popular in Romance"
                 TitleIcon={AiFillHeart}
@@ -124,10 +124,10 @@ const Home = (props) => {
             />
             <MovieScrollView
                 parameters={{
-                    limit:15,
-                    genre:'fantasy',
-                    sort_by:"year",
-                    minimum_rating:7
+                    limit: 15,
+                    genre: 'fantasy',
+                    sort_by: "year",
+                    minimum_rating: 7
                 }}
                 title="Trending in Fantasy"
                 TitleIcon={GiMagicGate}
@@ -135,10 +135,10 @@ const Home = (props) => {
             />
             <MovieScrollView
                 parameters={{
-                    limit:15,
-                    genre:'Drama',
-                    sort_by:"year",
-                    minimum_rating:7
+                    limit: 15,
+                    genre: 'Drama',
+                    sort_by: "year",
+                    minimum_rating: 7
                 }}
                 title="Treanding in Drama"
                 TitleIcon={GiDramaMasks}
@@ -146,10 +146,10 @@ const Home = (props) => {
             />
             <MovieScrollView
                 parameters={{
-                    limit:15,
-                    genre:'Horror',
-                    sort_by:"download_count",
-                    minimum_rating:0,
+                    limit: 15,
+                    genre: 'Horror',
+                    sort_by: "download_count",
+                    minimum_rating: 0,
                 }}
                 title="Popular in Horror"
                 TitleIcon={FaGhost}
@@ -157,18 +157,18 @@ const Home = (props) => {
             />
             <MovieScrollView
                 parameters={{
-                    limit:15,
-                    genre:'Musical',
-                    sort_by:"download_count",
-                    minimum_rating:0,
+                    limit: 15,
+                    genre: 'Musical',
+                    sort_by: "download_count",
+                    minimum_rating: 0,
                 }}
                 title="Popular in Musical"
                 TitleIcon={BsMusicNoteBeamed}
                 togglelModal={handelModalOpen}
             />
-            <DetailedMovieView 
-                isModalOpen={isModalOpen}  
-                handelModalClose={handelModalClose} 
+            <DetailedMovieView
+                isModalOpen={isModalOpen}
+                handelModalClose={handelModalClose}
                 data={selectedMovieData}
                 isLoading={modalIsLoading}
                 handelSimilarMovie={handelSimilarMovie}
