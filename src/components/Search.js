@@ -66,7 +66,7 @@ const Search = (props) => {
                 .catch(err => console.log("ERROR::", err))
         }
         fetchTopMovies();
-    },[])
+    }, [])
 
     //methods
     function handelModalOpen(movieId) {
@@ -109,57 +109,57 @@ const Search = (props) => {
     }
 
     function fetchSearchedMovie(movie) {
-            let url = new URL(url_link + 'list_movies.json')
+        let url = new URL(url_link + 'list_movies.json')
 
-            let params;
+        let params;
 
-            if(search===""){
-                params = {
-                    limit: 40,
+        if (search === "") {
+            params = {
+                limit: 40,
                 // genre: 'fantasy',
                 sort_by: "year",
                 minimum_rating: 7
-                }
             }
-            else{
-                params = {
-                    limit:50,
-                    query_term:movie,
-                    sort_by:'download_count'
-                }
+        }
+        else {
+            params = {
+                limit: 50,
+                query_term: movie,
+                sort_by: 'download_count'
             }
+        }
 
-            if (params != null) {
-                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-            }
+        if (params != null) {
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        }
 
-            fetch("https://vpn-api.herokuapp.com/fetch", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*"
-                },
-                body: JSON.stringify({
-                    url: url,
-                    username: "Hitman12355",
-                    password: "qwerty123456"
-                })
+        fetch("https://vpn-api.herokuapp.com/fetch", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': "*"
+            },
+            body: JSON.stringify({
+                url: url,
+                username: "Hitman12355",
+                password: "qwerty123456"
             })
-                .then(resp => resp.json())
-                .then(result => {
-                    console.log("data",result);
-                    if(result.data.movie_count===0){
-                        setData([])
-                    }
-                    else{
-                        setData(result.data.movies);
-                    }
-                    setisLoading(false)
-                })
-                .catch(err => console.log("ERROR::", err))
+        })
+            .then(resp => resp.json())
+            .then(result => {
+                // console.log("data",result);
+                if (result.data.movie_count === 0) {
+                    setData([])
+                }
+                else {
+                    setData(result.data.movies);
+                }
+                setisLoading(false)
+            })
+            .catch(err => console.log("ERROR::", err))
     }
 
-    function onSearchChanged(value){
+    function onSearchChanged(value) {
         setSearch(value)
         setisLoading(true);
         fetchSearchedMovie(value)
@@ -171,7 +171,7 @@ const Search = (props) => {
                 <Tooltip title={movie.title} arrow placement="bottom">
                     <Paper onClick={() => handelModalOpen(movie.id)} key={index.toString()} className={styles.movieCon}>
                         <div style={{}}>
-                            <img  src={"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                            <img src={"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                         </div>
                         <Container className={styles.titleCon}>
                             <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -201,7 +201,7 @@ const Search = (props) => {
                 </Container>
             </Container>
 
-            <div id="scrollDiv" style={{marginTop:"15px"}}>
+            <div id="scrollDiv" style={{ marginTop: "15px" }}>
                 {
                     isLoading ?
                         <Container style={{ display: "flex", justifyContent: "center", alignItems: 'center', height: "100%", padding: '20px', marginTop: '13%' }} maxWidth="xl">
@@ -314,10 +314,10 @@ const useStyles = makeStyles({
         width: "100%",
         height: "40px",
         display: 'flex',
-        background:"#00000050",
+        background: "#00000050",
         justifyContent: "center",
         alignItems: "center",
-        borderRadius:"10px"
+        borderRadius: "10px"
     },
     movieName: {
         color: "#fff",

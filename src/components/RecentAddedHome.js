@@ -49,16 +49,16 @@ const RecentlyAddedList = (props) => {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://vpn-api.herokuapp.com/fetch",{
-            method:"POST",
-            headers:{
+        fetch("https://vpn-api.herokuapp.com/fetch", {
+            method: "POST",
+            headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin':"*"
+                'Access-Control-Allow-Origin': "*"
             },
-            body:JSON.stringify({
-                url:url,
-                username:"Hitman12355",
-                password:"qwerty123456"
+            body: JSON.stringify({
+                url: url,
+                username: "Hitman12355",
+                password: "qwerty123456"
             })
         })
             .then(resp => resp.json())
@@ -66,16 +66,16 @@ const RecentlyAddedList = (props) => {
                 // tempList=data.data.movies
                 // console.log(data);
                 const promises = data.data.movies.map(movie => {
-                    return fetch("https://vpn-api.herokuapp.com/fetch",{
-                        method:"POST",
-                        headers:{
+                    return fetch("https://vpn-api.herokuapp.com/fetch", {
+                        method: "POST",
+                        headers: {
                             'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin':"*"
+                            'Access-Control-Allow-Origin': "*"
                         },
-                        body:JSON.stringify({
-                            url:url_link + `movie_details.json?movie_id=${movie.id}&with_images=true&with_cast=true`,
-                            username:"Hitman12355",
-                            password:"qwerty123456"
+                        body: JSON.stringify({
+                            url: url_link + `movie_details.json?movie_id=${movie.id}&with_images=true&with_cast=true`,
+                            username: "Hitman12355",
+                            password: "qwerty123456"
                         })
                     })
                         .then(resp => { return resp.json() })
@@ -86,15 +86,15 @@ const RecentlyAddedList = (props) => {
                     const tempData = results.map(result => result.data.movie)
                     setData(tempData);
                     setIsLoading(false);
-                    console.log(tempData);
+                    // console.log(tempData);
                 })
                     .catch(err => console.log("ERROR::", err))
             })
             .catch(err => {
                 console.log('ERROR::', err);
-                setTimeout(()=>{
+                setTimeout(() => {
                     fetchRecentlyAdded()
-                },5000)
+                }, 5000)
                 // fetchRecentlyAdded()
             })
 
@@ -102,11 +102,11 @@ const RecentlyAddedList = (props) => {
 
     const MovieView = ({ movie, index }) => {
         return (
-            <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://vpn-api.herokuapp.com/fetch/image?url="+movie.large_screenshot_image2})`, }} maxWidth="xl">
+            <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.large_screenshot_image2})`, }} maxWidth="xl">
                 <Container maxWidth='xl' className={styles.movieConFilter}>
                     <Paper elevation={10} className={styles.movieCoverCon}>
                         <Typography className={styles.rating}>{movie.rating + "/10"}<AiFillStar style={{ color: "#ffd700" }} /></Typography>
-                        <img src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ objectFit: 'fill', width: '100%', height: '100%' }} />
+                        <img src={"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image} style={{ objectFit: 'fill', width: '100%', height: '100%' }} />
                     </Paper>
                     <Container maxWidth="xl" className={styles.movieDetails}>
                         <Typography className={styles.movieTitle} variant="h4" component="h2">{movie.title}</Typography>
@@ -124,8 +124,8 @@ const RecentlyAddedList = (props) => {
                                 startIcon={<AiFillPlayCircle style={{ color: "#000" }} />}
                                 component={NavLink}
                                 to={{
-                                    pathname:`/videoPlayer/${movie.id}`,
-                                    state:movie
+                                    pathname: `/videoPlayer/${movie.id}`,
+                                    state: movie
                                 }}
                             >
                                 Play
@@ -146,7 +146,7 @@ const RecentlyAddedList = (props) => {
     }
 
     return (
-        <div style={{paddingInline:"15px"}}>
+        <div style={{ paddingInline: "15px" }}>
             <Container className={styles.titleContainer} maxWidth="xl">
                 <Typography className={styles.title}><IoIosRefreshCircle style={{ marginRight: 2 }} size={23} />Recently Added Movies</Typography>
                 <Button
@@ -157,31 +157,31 @@ const RecentlyAddedList = (props) => {
                     component={NavLink}
                     disabled={isLoading}
                     to={{
-                        pathname:'/viewMore/recentlyAdded',
-                        state:{
-                            parameters:{
+                        pathname: '/viewMore/recentlyAdded',
+                        state: {
+                            parameters: {
                                 limit: 5,
                                 sort_by: 'date_added',
                                 minimum_rating: 7.5,
-                                genre:""
+                                genre: ""
                                 // sort_by:'like_count'
                             },
-                            title:"Recently Added",
+                            title: "Recently Added",
                             // headingIcon:IoIosRefreshCircle,
-                            backgroundImage:(isLoading ? "": data[0].background_image_original)
+                            backgroundImage: (isLoading ? "" : data[0].background_image_original)
                         }
                     }}
                 >
                     View More
-                    </Button>
+                </Button>
             </Container>
             {isLoading ?
                 <Container className={styles.newMovieCon} maxWidth="xl">
-                    <Container maxWidth='xl' className={styles.movieConFilter} style={{background:"#ffffff00 "}}>
+                    <Container maxWidth='xl' className={styles.movieConFilter} style={{ background: "#ffffff00 " }}>
                         <Skeleton animation="wave" className={styles.movieCoverCon} variant="rect" />
                         <Container maxWidth="xl" className={styles.movieDetails} >
-                            <Skeleton animation="wave" variant="rect" style={{ width: "350px", height: 40,marginBottom:"5px" }} />
-                            <Skeleton animation="wave" variant="text" style={{ width: "300px", height: 10 ,marginBottom:"20px"}} />
+                            <Skeleton animation="wave" variant="rect" style={{ width: "350px", height: 40, marginBottom: "5px" }} />
+                            <Skeleton animation="wave" variant="text" style={{ width: "300px", height: 10, marginBottom: "20px" }} />
                             <div style={{ width: "60%", height: '110px', overflow: "hidden", textOverflow: 'ellipsis', lineHeight: "20px", marginBottom: "10px" }}>
                                 <Skeleton animation="wave" variant="text" style={{ width: "500px", height: "20px" }} />
                                 <Skeleton animation="wave" variant="text" style={{ width: "500px", height: "20px" }} />
@@ -190,8 +190,8 @@ const RecentlyAddedList = (props) => {
                                 <Skeleton animation="wave" variant="text" style={{ width: "500px", height: "20px" }} />
                             </div>
                             <Container className={styles.playButtons}>
-                                <Skeleton animation="wave" variant="rect" style={{width:'110px',height:"50px",borderRadius:"10px",margin:'5px'}} />
-                                <Skeleton animation="wave" variant="rect" style={{width:'150px',height:"50px",borderRadius:"10px",margin:'5px'}} />
+                                <Skeleton animation="wave" variant="rect" style={{ width: '110px', height: "50px", borderRadius: "10px", margin: '5px' }} />
+                                <Skeleton animation="wave" variant="rect" style={{ width: '150px', height: "50px", borderRadius: "10px", margin: '5px' }} />
                             </Container>
                         </Container>
                     </Container>
@@ -278,7 +278,7 @@ const useStyles = makeStyles((theme) => ({
         overflow: "hidden",
         padding: 0,
         position: "relative",
-        background:"transparent"
+        background: "transparent"
     },
     movieDetails: {
         height: "100%",
