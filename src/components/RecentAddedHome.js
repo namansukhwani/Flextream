@@ -102,7 +102,7 @@ const RecentlyAddedList = (props) => {
     }
 
     const MovieView = ({ movie, index }) => {
-        console.log(movie);
+        // console.log(movie);
         const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
         return (
             <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.large_screenshot_image2})`, }} maxWidth="xl">
