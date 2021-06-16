@@ -9,15 +9,39 @@ import {
     Tooltip,
 } from '@material-ui/core';
 import { AiFillFire, AiFillLeftCircle, AiFillRightCircle } from 'react-icons/ai'
-import {  FiArrowRight } from 'react-icons/fi'
+import { FiArrowRight } from 'react-icons/fi'
 import clsx from 'clsx';
 import { Skeleton } from '@material-ui/lab';
 import { NavLink } from 'react-router-dom';
 // import DetailedMovieView from './DetailedMovieView';
+import useProgressiveImg from '../hooks/progressiverImage';
 
 const url_link = "https://yts.mx/api/v2/";
 
-const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleIcon = AiFillFire,togglelModal }) => {
+const MovieView = ({ movie, index, togglelModal, largeDiv, styles, dataLength }) => {
+    const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
+    return (
+        <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "15px" }}
+            className={clsx({
+                [styles.paddingLeft]: index === 0,
+                [styles.paddingRight]: index === dataLength - 1
+            })}
+        >
+            <Tooltip title={movie.title} arrow placement="bottom">
+                <Paper onClick={() => togglelModal(movie.id)} key={index.toString()} style={{ width: (largeDiv ? '230px' : '185px') }} className={styles.movieCon}>
+                    <div style={{}}>
+                        <img alt="" src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+                    </div>
+                    <Container className={styles.titleCon}>
+                        <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
+                    </Container>
+                </Paper>
+            </Tooltip>
+        </div>
+    )
+}
+
+const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleIcon = AiFillFire, togglelModal }) => {
     const styles = useStyles();
     // const theme = useTheme()
 
@@ -35,23 +59,23 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
     useEffect(() => {
         async function fetchMostPopular() {
             let url = new URL(url_link + 'list_movies.json')
-    
+
             const params = parameters
-    
+
             if (params != null) {
                 Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
             }
-    
-            fetch("https://vpn-api.herokuapp.com/fetch",{
-                method:"POST",
-                headers:{
+
+            fetch("https://vpn-api.herokuapp.com/fetch", {
+                method: "POST",
+                headers: {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin':"*"
+                    'Access-Control-Allow-Origin': "*"
                 },
-                body:JSON.stringify({
-                    url:url,
-                    username:"Hitman12355",
-                    password:"qwerty123456"
+                body: JSON.stringify({
+                    url: url,
+                    username: "Hitman12355",
+                    password: "qwerty123456"
                 })
             })
                 .then(resp => resp.json())
@@ -62,12 +86,12 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
                 })
                 .catch(err => console.log("ERROR::", err))
         };
-    
+
         fetchMostPopular();
     }, [])
 
     //methods
-   
+
     const handleScroll = (direction) => {
         if (direction === 'left') {
             // console.log(scrollDiv.current.offsetWidth)
@@ -79,97 +103,77 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
         }
     }
 
-    const MovieView = ({ movie, index }) => {
-        return (
-            <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "15px" }}
-                className={clsx({
-                    [styles.paddingLeft]: index === 0,
-                    [styles.paddingRight]: index === data.length - 1
-                })}
-            >
-                <Tooltip title={movie.title} arrow placement="bottom">
-                    <Paper onClick={()=>togglelModal(movie.id)} key={index.toString()} style={{ width: (largeDiv ? '230px' : '185px') }} className={styles.movieCon}>
-                        <div style={{}}>
-                            <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url="+movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
-                        </div>
-                        <Container className={styles.titleCon}>
-                            <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
-                        </Container>
-                    </Paper>
-                </Tooltip>
-            </div>
-        )
-    }
+
 
     return (
         <>
-        <div style={{ paddingBottom: "15px", position: "relative", display: "flex", flexDirection: "column", }}>
-            <Container style={{ paddingInline: "15px" }} className={styles.titleContainer} maxWidth="xl">
-                <Typography className={styles.title}><TitleIcon style={{ marginRight: 2 }} size={23} />{title}</Typography>
-                <Button
-                    variant="text"
-                    color="default"
-                    endIcon={<FiArrowRight style={{ color: "#fff" }} />}
-                    className={styles.titleButton}
-                    component={NavLink}
-                    disabled={isLoading}
-                    to={{
-                        pathname:`/viewMore/${title}`,
-                        state:{
-                            parameters:parameters,
-                            title:title,
-                            backgroundImage:(isLoading ? "": data[0].background_image_original)
-                        }
-                    }}
-                >
-                    View More
+            <div style={{ paddingBottom: "15px", position: "relative", display: "flex", flexDirection: "column", }}>
+                <Container style={{ paddingInline: "15px" }} className={styles.titleContainer} maxWidth="xl">
+                    <Typography className={styles.title}><TitleIcon style={{ marginRight: 2 }} size={23} />{title}</Typography>
+                    <Button
+                        variant="text"
+                        color="default"
+                        endIcon={<FiArrowRight style={{ color: "#fff" }} />}
+                        className={styles.titleButton}
+                        component={NavLink}
+                        disabled={isLoading}
+                        to={{
+                            pathname: `/viewMore/${title}`,
+                            state: {
+                                parameters: parameters,
+                                title: title,
+                                backgroundImage: (isLoading ? "" : data[0].background_image_original)
+                            }
+                        }}
+                    >
+                        View More
                     </Button>
-            </Container>
-            {isLoading ?
-                // <div className={styles.Carousel}>
-                //     {[...Array(Math.ceil((window.innerWidth- 200) / 180)).keys()].map((h, index) => {
-                //         <Skeleton variant="rect" style={{width: "180px",height: "300px",borderRadius:'10px',paddingInline:'15px',paddingBlock:"15px"}} />
-                //     })}
-                // </div>
-                <Skeleton variant='rect' animation="wave" style={{height:'325px',width:'100%',margin:'15px',borderRadius:"10px",color:'#000'}} />
-                :
-                <div style={{ position: "relative" }}>
-                    <div
+                </Container>
+                {isLoading ?
+                    // <div className={styles.Carousel}>
+                    //     {[...Array(Math.ceil((window.innerWidth- 200) / 180)).keys()].map((h, index) => {
+                    //         <Skeleton variant="rect" style={{width: "180px",height: "300px",borderRadius:'10px',paddingInline:'15px',paddingBlock:"15px"}} />
+                    //     })}
+                    // </div>
+                    <Skeleton variant='rect' animation="wave" style={{ height: '325px', width: '100%', margin: '15px', borderRadius: "10px", color: '#000' }} />
+                    :
+                    <div style={{ position: "relative" }}>
+                        <div
+                            // onMouseEnter={() => setShowArrows(true)}
+                            // onMouseLeave={() => { setShowArrows(false) }}
+                            className={styles.arrowLeft}
+                        >
+                            <AiFillLeftCircle
+                                elevation={10}
+                                onClick={() => handleScroll('left')}
+                                size={55}
+                                style={{ color: "#fff", zIndex: '10' }}
+                            // className={showArrows ? styles.show : styles.hide}
+                            />
+                        </div>
+                        <div ref={ref => scrollDiv.current = ref} className={styles.Carousel}>
+                            {data.map((movie, index) => {
+                                return <MovieView key={index.toString()} movie={movie} index={index} togglelModal={(id) => togglelModal(id)} largeDiv={largeDiv} styles={styles} dateLength={data.length} />
+                            })}
+                        </div>
+                        <div
+                            className={styles.arrowRight}
                         // onMouseEnter={() => setShowArrows(true)}
-                        // onMouseLeave={() => { setShowArrows(false) }}
-                        className={styles.arrowLeft}
-                    >
-                        <AiFillLeftCircle
-                            elevation={10}
-                            onClick={() => handleScroll('left')}
-                            size={55}
-                            style={{ color: "#fff", zIndex: '10' }}
-                        // className={showArrows ? styles.show : styles.hide}
-                        />
-                    </div>
-                    <div ref={ref => scrollDiv.current = ref} className={styles.Carousel}>
-                        {data.map((movie, index) => {
-                            return <MovieView key={index.toString()} movie={movie} index={index} />
-                        })}
-                    </div>
-                    <div
-                        className={styles.arrowRight}
-                    // onMouseEnter={() => setShowArrows(true)}
-                    // onMouseLeave={() => { setTimeout(() => setShowArrows(false), 3000) }}
-                    >
-                        <AiFillRightCircle
-                            elevation={10}
-                            onClick={() => handleScroll('right')}
-                            size={55}
-                            style={{ color: "#fff", zIndex: '10' }}
-                        // className={showArrows ? styles.show : styles.hide}
+                        // onMouseLeave={() => { setTimeout(() => setShowArrows(false), 3000) }}
+                        >
+                            <AiFillRightCircle
+                                elevation={10}
+                                onClick={() => handleScroll('right')}
+                                size={55}
+                                style={{ color: "#fff", zIndex: '10' }}
+                            // className={showArrows ? styles.show : styles.hide}
 
-                        />
+                            />
+                        </div>
                     </div>
-                </div>
-            }
-        </div>
-        {/* <DetailedMovieView isModalOpen={isModalOPen} setIsModalOpen={(value)=>setisModalOPen(value)} /> */}
+                }
+            </div>
+            {/* <DetailedMovieView isModalOpen={isModalOPen} setIsModalOpen={(value)=>setisModalOPen(value)} /> */}
         </>
     )
 }
@@ -223,8 +227,8 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: "center",
         alignItems: "center",
-        background:"#00000050",
-        borderRadius:"10px"
+        background: "#00000050",
+        borderRadius: "10px"
     },
     movieName: {
         color: "#fff",

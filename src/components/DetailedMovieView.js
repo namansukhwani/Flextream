@@ -20,6 +20,7 @@ import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar, AiOutlineDownload } fro
 import { FaMagnet } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
+import useProgressiveImg from '../hooks/progressiverImage';
 
 const url_link = "https://yts.mx/api/v2/";
 const trackers = `&tr=${encodeURIComponent('udp://open.demonii.com:1337/announce')}&tr=${encodeURIComponent('udp://tracker.openbittorrent.com:80')}&tr=${encodeURIComponent('udp://tracker.coppersurfer.tk:6969')}&tr=${encodeURIComponent('udp://glotorrents.pw:6969/announce')}&tr=${encodeURIComponent('udp://tracker.opentrackr.org:1337/announce')}&tr=${encodeURIComponent('udp://torrent.gresille.org:80/announce')}&tr=${encodeURIComponent('udp://p4p.arenabg.com:1337')}&tr=${encodeURIComponent('udp://tracker.leechers-paradise.org:6969')}`
@@ -27,6 +28,8 @@ const trackers = `&tr=${encodeURIComponent('udp://open.demonii.com:1337/announce
 function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoading = true, handelModalClose, handelSimilarMovie }) {
 
     const styles = useStyles();
+
+    const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + data.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + data.medium_cover_image);
 
     // states
     const [similarLoading, setSimilarLoading] = useState(true)
@@ -125,12 +128,14 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     }
 
     const MovieView = ({ movie, index }) => {
+        const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
+
         return (
             <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
                 <Tooltip title={movie.title} arrow placement="bottom">
                     <Paper onClick={() => { handelSimilarMovie(movie.id) }} key={index.toString()} className={styles.movieCon}>
                         <div style={{}}>
-                            <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                            <img alt="" src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
                         </div>
                         <Container className={styles.titleCon}>
                             <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -139,6 +144,11 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
                 </Tooltip>
             </div>
         )
+    }
+
+    const BackgroundImgView = ({ image, index }) => {
+        const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + image.small, "https://vpn-api.herokuapp.com/fetch/image?url=" + image.large);
+        return <img alt="" key={index} src={src} className={styles.imageStyle} style={{ filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
     }
 
     return (
@@ -172,8 +182,8 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
                                     stopAutoPlayOnHover={false}
                                 >
                                     {
-                                        [data.large_screenshot_image1, data.large_screenshot_image2, data.large_screenshot_image3].map((image, index) => {
-                                            return <img alt="" key={index} src={"https://vpn-api.herokuapp.com/fetch/image?url=" + image} className={styles.imageStyle} />
+                                        [{ large: data.large_screenshot_image1, small: data.medium_screenshot_image1 }, { large: data.large_screenshot_image2, small: data.medium_screenshot_image2 }, { large: data.large_screenshot_image3, small: data.medium_screenshot_image3 }].map((image, index) => {
+                                            return <BackgroundImgView key={index.toString()} image={image} index={index} />
                                         })
                                     }
                                 </Carousel>
@@ -183,7 +193,7 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
                             <Container maxWidth="xl" className={styles.titleDiv}>
                                 <Grid item sm={12} md={3} style={{ zIndex: 20 }}>
                                     <Paper elevation={10} className={styles.posterDiv}>
-                                        <img alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url=" + data.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
+                                        <img alt="" src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
                                     </Paper>
                                 </Grid>
 

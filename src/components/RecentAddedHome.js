@@ -14,6 +14,7 @@ import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar } from 'react-icons/ai';
 import { Languages } from '../Data/languages';
 import Carousel from 'react-material-ui-carousel';
 import { NavLink } from 'react-router-dom';
+import useProgressiveImg from '../hooks/progressiverImage';
 
 const url_link = "https://yts.mx/api/v2/";
 
@@ -101,12 +102,14 @@ const RecentlyAddedList = (props) => {
     }
 
     const MovieView = ({ movie, index }) => {
+        // console.log(movie);
+        const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
         return (
             <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.large_screenshot_image2})`, }} maxWidth="xl">
                 <Container maxWidth='xl' className={styles.movieConFilter}>
                     <Paper elevation={10} className={styles.movieCoverCon}>
                         <Typography className={styles.rating}>{movie.rating + "/10"}<AiFillStar style={{ color: "#ffd700" }} /></Typography>
-                        <img src={"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image} style={{ objectFit: 'fill', width: '100%', height: '100%' }} />
+                        <img src={src} style={{ objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
                     </Paper>
                     <Container maxWidth="xl" className={styles.movieDetails}>
                         <Typography className={styles.movieTitle} variant="h4" component="h2">{movie.title}</Typography>
