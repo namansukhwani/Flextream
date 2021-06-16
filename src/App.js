@@ -2,6 +2,9 @@ import React from 'react';
 import './App.css';
 import Main from './components/main';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core';
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { store, persistStrore } from './redux/Store'
 
 const theme = createMuiTheme({
   // overrides: {
@@ -24,10 +27,13 @@ const theme = createMuiTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <Main />
-    </ThemeProvider>
-
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistStrore}>
+        <ThemeProvider theme={theme}>
+          <Main />
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
   );
 }
 
