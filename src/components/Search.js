@@ -11,8 +11,28 @@ import {
 import { AiOutlineSearch } from 'react-icons/ai'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import DetailedMovieView from './DetailedMovieView';
+import useProgressiveImg from '../hooks/progressiverImage';
 
 const url_link = "https://yts.mx/api/v2/";
+
+const MovieView = ({ movie, index, handelModalOpen, styles }) => {
+    const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
+
+    return (
+        <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
+            <Tooltip title={movie.title} arrow placement="bottom">
+                <Paper onClick={() => handelModalOpen(movie.id)} key={index.toString()} className={styles.movieCon}>
+                    <div style={{}}>
+                        <img src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+                    </div>
+                    <Container className={styles.titleCon}>
+                        <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
+                    </Container>
+                </Paper>
+            </Tooltip>
+        </div>
+    )
+}
 
 const Search = (props) => {
 
@@ -165,23 +185,6 @@ const Search = (props) => {
         fetchSearchedMovie(value)
     }
 
-    const MovieView = ({ movie, index }) => {
-        return (
-            <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
-                <Tooltip title={movie.title} arrow placement="bottom">
-                    <Paper onClick={() => handelModalOpen(movie.id)} key={index.toString()} className={styles.movieCon}>
-                        <div style={{}}>
-                            <img src={"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
-                        </div>
-                        <Container className={styles.titleCon}>
-                            <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
-                        </Container>
-                    </Paper>
-                </Tooltip>
-            </div>
-        )
-    }
-
     return (
         <div style={{ width: "100%", height: '100%' }}>
             <Container className={styles.searchContainer} maxWidth="xl" >
@@ -221,7 +224,7 @@ const Search = (props) => {
 
                             >
                                 {data.map((movie, index) => {
-                                    return <MovieView key={index.toString()} movie={movie} index={index} />
+                                    return <MovieView key={index.toString()} movie={movie} index={index} handelModalOpen={(id) => handelModalOpen(id)} styles={styles} />
                                 })}
                             </InfiniteScroll>
 
