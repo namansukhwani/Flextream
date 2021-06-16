@@ -16,17 +16,21 @@ import {
 import { } from 'react-router-dom';
 import Carousel from 'react-material-ui-carousel';
 import { Languages } from '../Data/languages';
-import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar, AiOutlineDownload } from 'react-icons/ai';
+import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar, AiOutlineDownload, AiFillDelete } from 'react-icons/ai';
 import { FaMagnet } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import useProgressiveImg from '../hooks/progressiverImage';
+import { addMovie, removeMovie, errList } from '../redux/slices/myListSlice'
+import { useSelector, useDispatch } from 'react-redux'
 
 const url_link = "https://yts.mx/api/v2/";
 const trackers = `&tr=${encodeURIComponent('udp://open.demonii.com:1337/announce')}&tr=${encodeURIComponent('udp://tracker.openbittorrent.com:80')}&tr=${encodeURIComponent('udp://tracker.coppersurfer.tk:6969')}&tr=${encodeURIComponent('udp://glotorrents.pw:6969/announce')}&tr=${encodeURIComponent('udp://tracker.opentrackr.org:1337/announce')}&tr=${encodeURIComponent('udp://torrent.gresille.org:80/announce')}&tr=${encodeURIComponent('udp://p4p.arenabg.com:1337')}&tr=${encodeURIComponent('udp://tracker.leechers-paradise.org:6969')}`
 
 function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoading = true, handelModalClose, handelSimilarMovie }) {
 
+    const mylist = useSelector(state => state.mylist)
+    const dispatch = useDispatch();
     const styles = useStyles();
 
     const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + data.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + data.medium_cover_image);
@@ -79,6 +83,15 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
         }
         catch (err) {
             // console.log(err);
+        }
+    }
+
+    const addRemoveFromMyList = () => {
+        if (mylist.list && data.id in mylist.list) {
+            dispatch(removeMovie(data.id.toString()))
+        }
+        else {
+            dispatch(addMovie(data));
         }
     }
 
@@ -219,9 +232,10 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
                                                 variant="outlined"
                                                 style={{ color: "#fff", alignSelf: "center", zIndex: 20, borderColor: "#fff", marginBottom: "15px", }}
                                                 size="large"
-                                                startIcon={<AiFillPlusCircle style={{ color: "#fff" }} />}
+                                                startIcon={mylist.list && data.id.toString() in mylist.list ? <AiFillDelete style={{ color: "#fff" }} /> : <AiFillPlusCircle style={{ color: "#fff" }} />}
+                                                onClick={addRemoveFromMyList}
                                             >
-                                                Add to My list
+                                                {mylist.list && data.id.toString() in mylist.list ? "Remove From List" : "Add to My list"}
                                             </Button>
                                         </Grid>
                                         <Grid xs={12} md={1} item>
