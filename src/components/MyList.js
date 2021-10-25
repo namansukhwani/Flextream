@@ -16,7 +16,7 @@ import { AiFillCloseCircle } from 'react-icons/ai';
 const url_link = "https://yts.mx/api/v2/";
 
 const MovieView = ({ movie, index, handelModalOpen, styles }) => {
-    const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
+    const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
 
     return (
         <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
@@ -69,7 +69,7 @@ const MyList = (props) => {
     }
 
     async function fetchMovieDetails(movieId) {
-        fetch("https://vpn-api.herokuapp.com/fetch", {
+        fetch("https://flextream.herokuapp.com/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ const MyList = (props) => {
     if (list.length > 0) {
         return (
             <div>
-                <Container style={{ backgroundImage: `url(${"https://vpn-api.herokuapp.com/fetch/image?url=" + list[0].background_image_original})` }} maxWidth="xl" className={styles.headingDiv}>
+                <Container style={{ backgroundImage: `url(${"https://flextream.herokuapp.com/fetch/image?url=" + list[0].background_image_original})` }} maxWidth="xl" className={styles.headingDiv}>
                     <div className={styles.filterDiv}>
                         <Typography className={styles.heading} variant="h4" component="h2">
                             My List 🎬

@@ -50,7 +50,7 @@ const RecentlyAddedList = (props) => {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://vpn-api.herokuapp.com/fetch", {
+        fetch("https://flextream.herokuapp.com/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -58,8 +58,6 @@ const RecentlyAddedList = (props) => {
             },
             body: JSON.stringify({
                 url: url,
-                username: "Hitman12355",
-                password: "qwerty123456"
             })
         })
             .then(resp => resp.json())
@@ -67,7 +65,7 @@ const RecentlyAddedList = (props) => {
                 // tempList=data.data.movies
                 // console.log(data);
                 const promises = data.data.movies.map(movie => {
-                    return fetch("https://vpn-api.herokuapp.com/fetch", {
+                    return fetch("https://flextream.herokuapp.com/fetch", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
@@ -103,9 +101,9 @@ const RecentlyAddedList = (props) => {
 
     const MovieView = ({ movie, index }) => {
         // console.log(movie);
-        const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
+        const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
         return (
-            <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.large_screenshot_image2})`, }} maxWidth="xl">
+            <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://flextream.herokuapp.com/fetch/image?url=" + movie.large_screenshot_image2})`, }} maxWidth="xl">
                 <Container maxWidth='xl' className={styles.movieConFilter}>
                     <Paper elevation={10} className={styles.movieCoverCon}>
                         <Typography className={styles.rating}>{movie.rating + "/10"}<AiFillStar style={{ color: "#ffd700" }} /></Typography>

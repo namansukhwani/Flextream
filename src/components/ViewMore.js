@@ -15,7 +15,7 @@ import useProgressiveImg from '../hooks/progressiverImage';
 const url_link = "https://yts.mx/api/v2/";
 
 const MovieView = ({ movie, index, handelModalOpen, styles }) => {
-    const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
+    const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
 
     return (
         <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
@@ -72,7 +72,7 @@ function ViewMore(props) {
     }
 
     async function fetchMovieDetails(movieId) {
-        fetch("https://vpn-api.herokuapp.com/fetch", {
+        fetch("https://flextream.herokuapp.com/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ function ViewMore(props) {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://vpn-api.herokuapp.com/fetch", {
+        fetch("https://flextream.herokuapp.com/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ function ViewMore(props) {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://vpn-api.herokuapp.com/fetch", {
+        fetch("https://flextream.herokuapp.com/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ function ViewMore(props) {
 
     return (
         <div id="scrollDiv">
-            <Container style={{ backgroundImage: `url(${"https://vpn-api.herokuapp.com/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
+            <Container style={{ backgroundImage: `url(${"https://flextream.herokuapp.com/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
                 <div className={styles.filterDiv}>
                     <Typography className={styles.heading} variant="h4" component="h2">
                         {state.title}

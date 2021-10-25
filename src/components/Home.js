@@ -46,7 +46,7 @@ const Home = (props) => {
     }
 
     async function fetchMovieDetails(movieId) {
-        fetch("https://vpn-api.herokuapp.com/fetch", {
+        fetch("https://flextream.herokuapp.com/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
