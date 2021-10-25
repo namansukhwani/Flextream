@@ -9,7 +9,7 @@ import RecentlyAddedList from './RecentAddedHome';
 import MovieScrollView from './MovieScrollView';
 import { FaStar, FaLaughSquint, FaGhost } from 'react-icons/fa'
 import { AiFillHeart } from 'react-icons/ai'
-import { BsMusicNoteBeamed } from 'react-icons/bs'
+import { BsMusicNoteBeamed ,BsFillAwardFill} from 'react-icons/bs'
 import { GiDramaMasks, GiMagicGate } from 'react-icons/gi'
 import DetailedMovieView from './DetailedMovieView';
 
@@ -86,6 +86,7 @@ const Home = (props) => {
                     genre: '',
                 }}
                 title="Most Popular Movies"
+                TitleIcon={BsFillAwardFill}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView

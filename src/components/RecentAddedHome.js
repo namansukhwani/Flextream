@@ -10,7 +10,7 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { FiArrowRight } from 'react-icons/fi'
 import { IoIosRefreshCircle } from 'react-icons/io'
-import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar } from 'react-icons/ai';
+import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar,AiFillFire } from 'react-icons/ai';
 import { Languages } from '../Data/languages';
 import Carousel from 'react-material-ui-carousel';
 import { NavLink } from 'react-router-dom';
@@ -50,21 +50,18 @@ const RecentlyAddedList = (props) => {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://flextream.herokuapp.com/fetch", {
-            method: "POST",
+        fetch("https://flextream.herokuapp.com/movies/trending?limit=8", {
+            method: "GET",
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': "*"
             },
-            body: JSON.stringify({
-                url: url,
-            })
         })
             .then(resp => resp.json())
             .then(data => {
                 // tempList=data.data.movies
                 // console.log(data);
-                const promises = data.data.movies.map(movie => {
+                const promises = data.map(movie => {
                     return fetch("https://flextream.herokuapp.com/fetch", {
                         method: "POST",
                         headers: {
@@ -73,8 +70,6 @@ const RecentlyAddedList = (props) => {
                         },
                         body: JSON.stringify({
                             url: url_link + `movie_details.json?movie_id=${movie.id}&with_images=true&with_cast=true`,
-                            username: "Hitman12355",
-                            password: "qwerty123456"
                         })
                     })
                         .then(resp => { return resp.json() })
@@ -149,7 +144,7 @@ const RecentlyAddedList = (props) => {
     return (
         <div style={{ paddingInline: "15px" }}>
             <Container className={styles.titleContainer} maxWidth="xl">
-                <Typography className={styles.title}><IoIosRefreshCircle style={{ marginRight: 2 }} size={23} />Recently Added Movies</Typography>
+                <Typography className={styles.title}><AiFillFire style={{ marginRight: 2 }} size={23} />Trending Movies</Typography>
                 <Button
                     variant="text"
                     color="default"
@@ -158,7 +153,7 @@ const RecentlyAddedList = (props) => {
                     component={NavLink}
                     disabled={isLoading}
                     to={{
-                        pathname: '/viewMore/recentlyAdded',
+                        pathname: '/viewMore/new/trending',
                         state: {
                             parameters: {
                                 limit: 5,
@@ -167,7 +162,7 @@ const RecentlyAddedList = (props) => {
                                 genre: ""
                                 // sort_by:'like_count'
                             },
-                            title: "Recently Added",
+                            title: "Trending",
                             // headingIcon:IoIosRefreshCircle,
                             backgroundImage: (isLoading ? "" : data[0].background_image_original)
                         }
