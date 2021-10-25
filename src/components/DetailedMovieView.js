@@ -33,7 +33,7 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     const dispatch = useDispatch();
     const styles = useStyles();
 
-    const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + data.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + data.medium_cover_image);
+    const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + data.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + data.medium_cover_image);
 
     // states
     const [similarLoading, setSimilarLoading] = useState(true)
@@ -44,7 +44,7 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     //lifecycle
     useEffect(() => {
         async function fetchSimilarMovies() {
-            fetch("https://vpn-api.herokuapp.com/fetch", {
+            fetch("https://flextream.herokuapp.com/fetch", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     }
 
     const MovieView = ({ movie, index }) => {
-        const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
+        const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
 
         return (
             <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
@@ -160,7 +160,7 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     }
 
     const BackgroundImgView = ({ image, index }) => {
-        const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + image.small, "https://vpn-api.herokuapp.com/fetch/image?url=" + image.large);
+        const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + image.small, "https://flextream.herokuapp.com/fetch/image?url=" + image.large);
         return <img alt="" key={index} src={src} className={styles.imageStyle} style={{ filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
     }
 
@@ -269,7 +269,7 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
                                         {data.cast.map((data, index) => {
                                             return <div key={index} className={styles.castBox}>
                                                 <Grid md={3}>
-                                                    <Avatar alt="" src={"https://vpn-api.herokuapp.com/fetch/image?url=" + data.url_small_image} />
+                                                    <Avatar alt="" src={"https://flextream.herokuapp.com/fetch/image?url=" + data.url_small_image} />
                                                 </Grid>
                                                 <Grid md={9}>
                                                     <Typography noWrap style={{ color: '#fff', marginLeft: "10px", fontSize: "18px" }}>{data.name}</Typography>

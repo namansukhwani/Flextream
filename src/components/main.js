@@ -9,6 +9,7 @@ import SideToolbar from './SideToolBar';
 import VideoPlayer from './VideoPlayer';
 import Header from './Header';
 import ViewMore from './ViewMore';
+import ViewMoreTrending from '../pages/viewMoreTrending';
 // import DetailedMovieView from './DetailedMovieView';
 
 const Main = () => {
@@ -33,7 +34,8 @@ const Main = () => {
                         <Route path="/MyList" component={MyList} />
                         <Route path="/Category" component={Category} />
                         <Route exact path="/videoPlayer/:movieId" component={VideoPlayer} />
-                        <Route exact path="/viewMore/:mainTitle" component={ViewMore}/>
+                    <Route exact path="/viewMore/:mainTitle" component={ViewMore} />
+                    <Route exact path="/viewMore/new/trending" component={ViewMoreTrending}/>
                         <Redirect to="/Home" />
                     </Switch>
                 {/* </div> */}

@@ -10,7 +10,7 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import { FiArrowRight } from 'react-icons/fi'
 import { IoIosRefreshCircle } from 'react-icons/io'
-import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar } from 'react-icons/ai';
+import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar,AiFillFire } from 'react-icons/ai';
 import { Languages } from '../Data/languages';
 import Carousel from 'react-material-ui-carousel';
 import { NavLink } from 'react-router-dom';
@@ -50,24 +50,19 @@ const RecentlyAddedList = (props) => {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://vpn-api.herokuapp.com/fetch", {
-            method: "POST",
+        fetch("https://flextream.herokuapp.com/movies/trending?limit=8", {
+            method: "GET",
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': "*"
             },
-            body: JSON.stringify({
-                url: url,
-                username: "Hitman12355",
-                password: "qwerty123456"
-            })
         })
             .then(resp => resp.json())
             .then(data => {
                 // tempList=data.data.movies
                 // console.log(data);
-                const promises = data.data.movies.map(movie => {
-                    return fetch("https://vpn-api.herokuapp.com/fetch", {
+                const promises = data.map(movie => {
+                    return fetch("https://flextream.herokuapp.com/fetch", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
@@ -75,8 +70,6 @@ const RecentlyAddedList = (props) => {
                         },
                         body: JSON.stringify({
                             url: url_link + `movie_details.json?movie_id=${movie.id}&with_images=true&with_cast=true`,
-                            username: "Hitman12355",
-                            password: "qwerty123456"
                         })
                     })
                         .then(resp => { return resp.json() })
@@ -103,9 +96,9 @@ const RecentlyAddedList = (props) => {
 
     const MovieView = ({ movie, index }) => {
         // console.log(movie);
-        const [src, { blur }] = useProgressiveImg("https://vpn-api.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://vpn-api.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
+        const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
         return (
-            <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://vpn-api.herokuapp.com/fetch/image?url=" + movie.large_screenshot_image2})`, }} maxWidth="xl">
+            <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://flextream.herokuapp.com/fetch/image?url=" + movie.large_screenshot_image2})`, }} maxWidth="xl">
                 <Container maxWidth='xl' className={styles.movieConFilter}>
                     <Paper elevation={10} className={styles.movieCoverCon}>
                         <Typography className={styles.rating}>{movie.rating + "/10"}<AiFillStar style={{ color: "#ffd700" }} /></Typography>
@@ -151,7 +144,7 @@ const RecentlyAddedList = (props) => {
     return (
         <div style={{ paddingInline: "15px" }}>
             <Container className={styles.titleContainer} maxWidth="xl">
-                <Typography className={styles.title}><IoIosRefreshCircle style={{ marginRight: 2 }} size={23} />Recently Added Movies</Typography>
+                <Typography className={styles.title}><AiFillFire style={{ marginRight: 2 }} size={23} />Trending Movies</Typography>
                 <Button
                     variant="text"
                     color="default"
@@ -160,7 +153,7 @@ const RecentlyAddedList = (props) => {
                     component={NavLink}
                     disabled={isLoading}
                     to={{
-                        pathname: '/viewMore/recentlyAdded',
+                        pathname: '/viewMore/new/trending',
                         state: {
                             parameters: {
                                 limit: 5,
@@ -169,7 +162,7 @@ const RecentlyAddedList = (props) => {
                                 genre: ""
                                 // sort_by:'like_count'
                             },
-                            title: "Recently Added",
+                            title: "Trending",
                             // headingIcon:IoIosRefreshCircle,
                             backgroundImage: (isLoading ? "" : data[0].background_image_original)
                         }

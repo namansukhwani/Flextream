@@ -9,10 +9,11 @@ import {
 } from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import DetailedMovieView from './DetailedMovieView';
+import DetailedMovieView from '../components/DetailedMovieView';
 import useProgressiveImg from '../hooks/progressiverImage';
 
-const url_link = "https://yts.mx/api/v2/";
+const url_link = "https://flextream.herokuapp.com/movies/trending";
+const url = "https://yts.mx/api/v2/";
 
 const MovieView = ({ movie, index, handelModalOpen, styles }) => {
     const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
@@ -33,16 +34,14 @@ const MovieView = ({ movie, index, handelModalOpen, styles }) => {
     )
 }
 
-function ViewMore(props) {
+function ViewMoreTrending(props) {
 
     const styles = useStyles();
     const { state } = useLocation();
-    const limit = 40;
 
     //refs
 
     //states
-    const [pageNo, setPageNo] = useState(1);
     const [data, setData] = useState([])
     const [isLoading, setisLoading] = useState(true)
     const [loadingMore, setLoadingMore] = useState(true)
@@ -79,9 +78,7 @@ function ViewMore(props) {
                 'Access-Control-Allow-Origin': "*"
             },
             body: JSON.stringify({
-                url: url_link + `movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
-                username: "Hitman12355",
-                password: "qwerty123456"
+                url: url + `movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
             })
         })
             .then(resp => resp.json())
@@ -96,90 +93,23 @@ function ViewMore(props) {
     }
 
     function fetchData() {
-        let url = new URL(url_link + 'list_movies.json')
 
-        const params = {
-            limit: limit,
-            page: 1,
-            genre: state.parameters.genre,
-            sort_by: state.parameters.sort_by,
-            minimum_rating: state.parameters.minimum_rating,
-        }
-
-        if (params != null) {
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-        }
-
-        fetch("https://flextream.herokuapp.com/fetch", {
-            method: "POST",
+        fetch(url_link, {
+            method: "GET",
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': "*"
             },
-            body: JSON.stringify({
-                url: url,
-                username: "Hitman12355",
-                password: "qwerty123456"
-            })
         })
             .then(resp => resp.json())
             .then(result => {
-                // console.log(result);
-                if (result.status === "ok") {
-                    setData(result.data.movies);
+                    setData(result);
                     setisLoading(false)
-                    setPageNo(pageNo + 1)
-                }
-
             })
             .catch(err => console.log("ERROR::", err))
     }
 
-    async function fetchMoreData() {
-        // console.log("feting MOre data");
-        let url = new URL(url_link + 'list_movies.json')
-
-        const params = {
-            limit: limit,
-            page: pageNo,
-            genre: state.parameters.genre,
-            sort_by: state.parameters.sort_by,
-            minimum_rating: state.parameters.minimum_rating,
-        }
-
-        // console.log(params);
-
-        if (params != null) {
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-        }
-
-        fetch("https://flextream.herokuapp.com/fetch", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': "*"
-            },
-            body: JSON.stringify({
-                url: url,
-                username: "Hitman12355",
-                password: "qwerty123456"
-            })
-        })
-            .then(resp => resp.json())
-            .then(result => {
-                // console.log("fetched more",result);
-                if (result.status === "ok") {
-                    setData(data.concat(result.data.movies));
-                    setisLoading(false)
-                    setPageNo(pageNo + 1)
-                }
-
-            })
-            .catch(err => console.log("ERROR::", err))
-    }
-
-
-
+    
     return (
         <div id="scrollDiv">
             <Container style={{ backgroundImage: `url(${"https://flextream.herokuapp.com/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
@@ -197,13 +127,12 @@ function ViewMore(props) {
                     :
                     <InfiniteScroll
                         dataLength={data.length}
-                        hasMore={true}
+                        hasMore={false}
                         loader={<Container style={{ display: "flex", justifyContent: "center", alignItems: 'center', padding: '25px' }} maxWidth="xl">
                             <CircularProgress size={55} variant="indeterminate" style={{ color: "#14efab" }} />
                         </Container>}
                         // scrollableTarget="scrollDiv"
                         style={{ paddingInline: "15px", display: 'flex', flexDirection: "row", flexWrap: "wrap", justifyContent: "space-around" }}
-                        next={fetchMoreData}
                     >
                         {data.map((movie, index) => {
                             return <MovieView key={index.toString()} movie={movie} index={index} handelModalOpen={(id) => handelModalOpen(id)} styles={styles} />
@@ -226,7 +155,7 @@ function ViewMore(props) {
     )
 }
 
-export default ViewMore;
+export default ViewMoreTrending;
 
 const useStyles = makeStyles((theme) => ({
     movieCon: {
