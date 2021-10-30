@@ -142,9 +142,9 @@ function ViewMore(props) {
         const params = {
             limit: limit,
             page: pageNo,
-            genre: state.parameters.genre,
-            sort_by: state.parameters.sort_by,
-            minimum_rating: state.parameters.minimum_rating,
+            genre: state.parameters?.genre,
+            sort_by: state.parameters?.sort_by,
+            minimum_rating: state.parameters?.minimum_rating,
         }
 
         // console.log(params);
