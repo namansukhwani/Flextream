@@ -104,7 +104,7 @@ const Home = (props) => {
             />
             <MovieScrollView
                 parameters={{
-                    limit: 5,
+                    limit: 15,
                     sort_by: 'date_added',
                     minimum_rating: 7.5,
                 }}
