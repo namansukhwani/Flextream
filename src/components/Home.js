@@ -11,6 +11,7 @@ import { FaStar, FaLaughSquint, FaGhost } from 'react-icons/fa'
 import { AiFillHeart } from 'react-icons/ai'
 import { BsMusicNoteBeamed ,BsFillAwardFill} from 'react-icons/bs'
 import { GiDramaMasks, GiMagicGate } from 'react-icons/gi'
+import { IoIosRefreshCircle } from 'react-icons/io'
 import DetailedMovieView from './DetailedMovieView';
 
 const url_link = "https://yts.mx/api/v2/";
@@ -99,6 +100,16 @@ const Home = (props) => {
                 title="Top Rated Movies"
                 largeDiv={true}
                 TitleIcon={FaStar}
+                togglelModal={handelModalOpen}
+            />
+            <MovieScrollView
+                parameters={{
+                    limit: 5,
+                    sort_by: 'date_added',
+                    minimum_rating: 7.5,
+                }}
+                title="Recently Added"
+                TitleIcon={IoIosRefreshCircle}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
