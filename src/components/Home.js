@@ -106,7 +106,8 @@ const Home = (props) => {
                 parameters={{
                     limit: 15,
                     sort_by: 'date_added',
-                    minimum_rating: 7.5,
+                    minimum_rating: 0,
+                    genre:""
                 }}
                 title="Recently Added"
                 TitleIcon={IoIosRefreshCircle}
