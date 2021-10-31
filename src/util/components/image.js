@@ -6,7 +6,7 @@ import configration from './../configration';
 
 const Image = (props) => {
   const { sourceSmall, sourceMedium, styles, ...otherProps } = props
-  const [url,setUrl]=useState(configration.SERVER_URL_1) ;
+  const [url,setUrl]=useState(configration.SERVER_URL_1+"/fetch/image?url=") ;
   
   useEffect(() => {
     setUrl(imageService.getUrl());
