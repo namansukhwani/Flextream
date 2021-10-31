@@ -32,6 +32,10 @@ class FetchService{
             fetch(this._imageUrl+"/readiness")
         ])
     }
+
+    run() {
+        return;
+    }
 }
 
 const fetchAPI = new FetchService();

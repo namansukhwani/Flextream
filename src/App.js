@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect} from 'react';
 import './App.css';
 import Main from './components/main';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core';
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistStrore } from './redux/Store'
+import fetchAPI from './util/services/fetchService';
+import configration from './util/configration';
 
 const theme = createMuiTheme({
   // overrides: {
@@ -26,6 +28,12 @@ const theme = createMuiTheme({
 })
 
 function App() {
+
+  useEffect(() => {
+    configration.run();
+    fetchAPI.run();
+  },[])
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistStrore}>
