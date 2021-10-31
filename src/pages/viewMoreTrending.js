@@ -10,20 +10,22 @@ import {
 import { useLocation } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import DetailedMovieView from '../components/DetailedMovieView';
-import useProgressiveImg from '../hooks/progressiverImage';
+// import useProgressiveImg from '../util/hooks/progressiverImage';
+import Image from './../util/components/image';
+import configration from './../util/configration';
+import fetchAPI from './../util/services/fetchService';
 
-const url_link = "https://flextream.herokuapp.com/movies/trending";
-const url = "https://yts.mx/api/v2/";
+const url_link = "/movies/trending";
+const url = configration.API_URL;
 
 const MovieView = ({ movie, index, handelModalOpen, styles }) => {
-    const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
 
     return (
         <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
             <Tooltip title={movie.title} arrow placement="bottom">
                 <Paper onClick={() => handelModalOpen(movie.id)} key={index.toString()} className={styles.movieCon}>
                     <div style={{}}>
-                        <img src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+                        <Image sourceSmall={movie.small_cover_image} sourceMedium={movie.medium_cover_image} styles={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%'}} />
                     </div>
                     <Container className={styles.titleCon}>
                         <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -71,14 +73,14 @@ function ViewMoreTrending(props) {
     }
 
     async function fetchMovieDetails(movieId) {
-        fetch("https://flextream.herokuapp.com/fetch", {
+        fetchAPI.call("/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': "*"
             },
             body: JSON.stringify({
-                url: url + `movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
+                url: url + `/movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
             })
         })
             .then(resp => resp.json())
@@ -94,7 +96,7 @@ function ViewMoreTrending(props) {
 
     function fetchData() {
 
-        fetch(url_link, {
+        fetchAPI.call(url_link, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -112,7 +114,7 @@ function ViewMoreTrending(props) {
     
     return (
         <div id="scrollDiv">
-            <Container style={{ backgroundImage: `url(${"https://flextream.herokuapp.com/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
+            <Container style={{ backgroundImage: `url(${configration.SERVER_URL_1+"/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
                 <div className={styles.filterDiv}>
                     <Typography className={styles.heading} variant="h4" component="h2">
                         {state.title}

@@ -13,13 +13,13 @@ import { FiArrowRight } from 'react-icons/fi'
 import clsx from 'clsx';
 import { Skeleton } from '@material-ui/lab';
 import { NavLink } from 'react-router-dom';
-// import DetailedMovieView from './DetailedMovieView';
-import useProgressiveImg from '../hooks/progressiverImage';
+import configration from './../util/configration';
+import Image from '../util/components/image';
+import fetchAPI from './../util/services/fetchService';
 
-const url_link = "https://yts.mx/api/v2/";
+const url_link = configration.API_URL;
 
 const MovieView = ({ movie, index, togglelModal, largeDiv, styles, dataLength }) => {
-    const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
     return (
         <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "15px" }}
             className={clsx({
@@ -30,7 +30,7 @@ const MovieView = ({ movie, index, togglelModal, largeDiv, styles, dataLength })
             <Tooltip title={movie.title} arrow placement="bottom">
                 <Paper onClick={() => togglelModal(movie.id)} key={index.toString()} style={{ width: (largeDiv ? '230px' : '185px') }} className={styles.movieCon}>
                     <div style={{}}>
-                        <img alt="" src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+                        <Image sourceSmall={movie.small_cover_image} sourceMedium={movie.medium_cover_image} styles={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%',}} />
                     </div>
                     <Container className={styles.titleCon}>
                         <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -58,7 +58,7 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
     //lifecycle
     useEffect(() => {
         async function fetchMostPopular() {
-            let url = new URL(url_link + 'list_movies.json')
+            let url = new URL(url_link + '/list_movies.json')
 
             const params = parameters
 
@@ -66,7 +66,7 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
                 Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
             }
 
-            fetch("https://flextream.herokuapp.com/fetch", {
+            fetchAPI.call("/fetch", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,8 +74,6 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
                 },
                 body: JSON.stringify({
                     url: url,
-                    username: "Hitman12355",
-                    password: "qwerty123456"
                 })
             })
                 .then(resp => resp.json())
@@ -283,4 +281,6 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: {
         paddingRight: "15px !important"
     }
+
+
 }))
