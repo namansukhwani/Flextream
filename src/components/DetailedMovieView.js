@@ -20,11 +20,13 @@ import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar, AiOutlineDownload, AiFi
 import { FaMagnet } from 'react-icons/fa';
 import { MdCancel } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
-import useProgressiveImg from '../hooks/progressiverImage';
 import { addMovie, removeMovie, errList } from '../redux/slices/myListSlice'
 import { useSelector, useDispatch } from 'react-redux'
+import fetchAPI from '../util/services/fetchService'
+import Image from '../util/components/image';
+import configration from '../util/configration';
 
-const url_link = "https://yts.mx/api/v2/";
+const url_link = configration.API_URL;
 const trackers = `&tr=${encodeURIComponent('udp://open.demonii.com:1337/announce')}&tr=${encodeURIComponent('udp://tracker.openbittorrent.com:80')}&tr=${encodeURIComponent('udp://tracker.coppersurfer.tk:6969')}&tr=${encodeURIComponent('udp://glotorrents.pw:6969/announce')}&tr=${encodeURIComponent('udp://tracker.opentrackr.org:1337/announce')}&tr=${encodeURIComponent('udp://torrent.gresille.org:80/announce')}&tr=${encodeURIComponent('udp://p4p.arenabg.com:1337')}&tr=${encodeURIComponent('udp://tracker.leechers-paradise.org:6969')}`
 
 function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoading = true, handelModalClose, handelSimilarMovie }) {
@@ -32,8 +34,6 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     const mylist = useSelector(state => state.mylist)
     const dispatch = useDispatch();
     const styles = useStyles();
-
-    const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + data.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + data.medium_cover_image);
 
     // states
     const [similarLoading, setSimilarLoading] = useState(true)
@@ -44,16 +44,14 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     //lifecycle
     useEffect(() => {
         async function fetchSimilarMovies() {
-            fetch("https://flextream.herokuapp.com/fetch", {
+            fetchAPI.call("/fetch", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': "*"
                 },
                 body: JSON.stringify({
-                    url: url_link + `movie_suggestions.json?movie_id=${data.id}`,
-                    username: "Hitman12355",
-                    password: "qwerty123456"
+                    url: url_link + `/movie_suggestions.json?movie_id=${data.id}`,
                 })
             })
                 .then(resp => resp.json())
@@ -141,14 +139,13 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     }
 
     const MovieView = ({ movie, index }) => {
-        const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
 
         return (
             <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
                 <Tooltip title={movie.title} arrow placement="bottom">
                     <Paper onClick={() => { handelSimilarMovie(movie.id) }} key={index.toString()} className={styles.movieCon}>
                         <div style={{}}>
-                            <img alt="" src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+                            <Image sourceSmall={movie.small_cover_image} sourceMedium={movie.medium_cover_image} styles={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%',}} />
                         </div>
                         <Container className={styles.titleCon}>
                             <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -160,8 +157,7 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
     }
 
     const BackgroundImgView = ({ image, index }) => {
-        const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + image.small, "https://flextream.herokuapp.com/fetch/image?url=" + image.large);
-        return <img alt="" key={index} src={src} className={styles.imageStyle} style={{ filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+        return <Image sourceSmall={image.small} sourceMedium={image.large} key={index}  className={styles.imageStyle} styles={{  }} />
     }
 
     return (
@@ -206,7 +202,7 @@ function DetailedMovieView({ isModalOpen = false, data = { torrents: [] }, isLoa
                             <Container maxWidth="xl" className={styles.titleDiv}>
                                 <Grid item sm={12} md={3} style={{ zIndex: 20 }}>
                                     <Paper elevation={10} className={styles.posterDiv}>
-                                        <img alt="" src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+                                        <Image sourceSmall={data.small_cover_image} sourceMedium={data.medium_cover_image} styles={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                                     </Paper>
                                 </Grid>
 
@@ -460,6 +456,7 @@ const useStyles = makeStyles({
         background: "#ffffff30",
         marginInline: "25px !important",
         margin: '15px'
+
     },
     similarDiv: {
         display: 'flex',

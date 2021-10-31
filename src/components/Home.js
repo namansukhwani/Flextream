@@ -5,7 +5,7 @@ import {
 
 } from '@material-ui/core';
 // import {AiFillInfoCircle} from 'react-icons/ai';
-import RecentlyAddedList from './RecentAddedHome';
+import TrendingList from './TrendingHome';
 import MovieScrollView from './MovieScrollView';
 import { FaStar, FaLaughSquint, FaGhost } from 'react-icons/fa'
 import { AiFillHeart } from 'react-icons/ai'
@@ -13,8 +13,10 @@ import { BsMusicNoteBeamed ,BsFillAwardFill} from 'react-icons/bs'
 import { GiDramaMasks, GiMagicGate } from 'react-icons/gi'
 import { IoIosRefreshCircle } from 'react-icons/io'
 import DetailedMovieView from './DetailedMovieView';
+import configration from './../util/configration';
+import fetchAPI from '../util/services/fetchService';
 
-const url_link = "https://yts.mx/api/v2/";
+const url_link = configration.API_URL;
 
 const Home = (props) => {
 
@@ -47,16 +49,14 @@ const Home = (props) => {
     }
 
     async function fetchMovieDetails(movieId) {
-        fetch("https://flextream.herokuapp.com/fetch", {
+        fetchAPI.call("/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': "*"
             },
             body: JSON.stringify({
-                url: url_link + `movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
-                username: "Hitman12355",
-                password: "qwerty123456"
+                url: url_link + `/movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
             })
         })
             .then(resp => resp.json())
@@ -78,7 +78,7 @@ const Home = (props) => {
                 </Typography>
                 <AiFillInfoCircle style={{color:'#fff'}} size={33} onClick={()=>{}}/>
             </Container> */}
-            <RecentlyAddedList />
+            <TrendingList />
             <MovieScrollView
                 parameters={{
                     limit: 16,

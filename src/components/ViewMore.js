@@ -10,19 +10,20 @@ import {
 import { useLocation } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import DetailedMovieView from './DetailedMovieView';
-import useProgressiveImg from '../hooks/progressiverImage';
+import configration from './../util/configration';
+import Image from '../util/components/image';
+import fetchAPI from '../util/services/fetchService';
 
-const url_link = "https://yts.mx/api/v2/";
+const url_link = configration.API_URL;
 
 const MovieView = ({ movie, index, handelModalOpen, styles }) => {
-    const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
 
     return (
         <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
             <Tooltip title={movie.title} arrow placement="bottom">
                 <Paper onClick={() => handelModalOpen(movie.id)} key={index.toString()} className={styles.movieCon}>
                     <div style={{}}>
-                        <img src={src} style={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+                        <Image sourceSmall={movie.small_cover_image} sourceMedium={movie.medium_cover_image} styles={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
                     </div>
                     <Container className={styles.titleCon}>
                         <Typography className={styles.movieName} noWrap={true}>{movie.title}</Typography>
@@ -72,16 +73,14 @@ function ViewMore(props) {
     }
 
     async function fetchMovieDetails(movieId) {
-        fetch("https://flextream.herokuapp.com/fetch", {
+        fetchAPI.call("/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': "*"
             },
             body: JSON.stringify({
-                url: url_link + `movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
-                username: "Hitman12355",
-                password: "qwerty123456"
+                url: url_link + `/movie_details.json?movie_id=${movieId}&with_images=true&with_cast=true`,
             })
         })
             .then(resp => resp.json())
@@ -96,7 +95,7 @@ function ViewMore(props) {
     }
 
     function fetchData() {
-        let url = new URL(url_link + 'list_movies.json')
+        let url = new URL(url_link + '/list_movies.json')
 
         const params = {
             limit: limit,
@@ -110,7 +109,7 @@ function ViewMore(props) {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://flextream.herokuapp.com/fetch", {
+        fetchAPI.call("/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -118,8 +117,6 @@ function ViewMore(props) {
             },
             body: JSON.stringify({
                 url: url,
-                username: "Hitman12355",
-                password: "qwerty123456"
             })
         })
             .then(resp => resp.json())
@@ -137,7 +134,7 @@ function ViewMore(props) {
 
     async function fetchMoreData() {
         // console.log("feting MOre data");
-        let url = new URL(url_link + 'list_movies.json')
+        let url = new URL(url_link + '/list_movies.json')
 
         const params = {
             limit: limit,
@@ -153,7 +150,7 @@ function ViewMore(props) {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://flextream.herokuapp.com/fetch", {
+        fetchAPI.call("/fetch", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -161,8 +158,6 @@ function ViewMore(props) {
             },
             body: JSON.stringify({
                 url: url,
-                username: "Hitman12355",
-                password: "qwerty123456"
             })
         })
             .then(resp => resp.json())
@@ -182,7 +177,7 @@ function ViewMore(props) {
 
     return (
         <div id="scrollDiv">
-            <Container style={{ backgroundImage: `url(${"https://flextream.herokuapp.com/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
+            <Container style={{ backgroundImage: `url(${configration.SERVER_URL_1+"/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
                 <div className={styles.filterDiv}>
                     <Typography className={styles.heading} variant="h4" component="h2">
                         {state.title}

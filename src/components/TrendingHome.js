@@ -9,16 +9,17 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { FiArrowRight } from 'react-icons/fi'
-import { IoIosRefreshCircle } from 'react-icons/io'
 import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar,AiFillFire } from 'react-icons/ai';
 import { Languages } from '../Data/languages';
 import Carousel from 'react-material-ui-carousel';
 import { NavLink } from 'react-router-dom';
-import useProgressiveImg from '../hooks/progressiverImage';
+import configration from '../util/configration';
+import Image from '../util/components/image';
+import fetchAPI from '../util/services/fetchService';
 
-const url_link = "https://yts.mx/api/v2/";
+const url_link = configration.API_URL;
 
-const RecentlyAddedList = (props) => {
+const TrendingList = (props) => {
 
     const styles = useStyles();
     const theme = useTheme
@@ -31,13 +32,13 @@ const RecentlyAddedList = (props) => {
 
     //lifecycle
     useEffect(() => {
-        fetchRecentlyAdded();
+        fetchTrending();
     }, [])
 
     //methods
-    async function fetchRecentlyAdded() {
+    async function fetchTrending() {
 
-        let url = new URL(url_link + 'list_movies.json')
+        let url = new URL(url_link + '/list_movies.json')
 
         const params = {
             limit: 5,
@@ -50,7 +51,7 @@ const RecentlyAddedList = (props) => {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         }
 
-        fetch("https://flextream.herokuapp.com/movies/trending?limit=8", {
+        fetchAPI.call("/movies/trending?limit=8", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -62,14 +63,14 @@ const RecentlyAddedList = (props) => {
                 // tempList=data.data.movies
                 // console.log(data);
                 const promises = data.map(movie => {
-                    return fetch("https://flextream.herokuapp.com/fetch", {
+                    return fetchAPI.call("/fetch", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
                             'Access-Control-Allow-Origin': "*"
                         },
                         body: JSON.stringify({
-                            url: url_link + `movie_details.json?movie_id=${movie.id}&with_images=true&with_cast=true`,
+                            url: url_link + `/movie_details.json?movie_id=${movie.id}&with_images=true&with_cast=true`,
                         })
                     })
                         .then(resp => { return resp.json() })
@@ -87,7 +88,7 @@ const RecentlyAddedList = (props) => {
             .catch(err => {
                 console.log('ERROR::', err);
                 setTimeout(() => {
-                    fetchRecentlyAdded()
+                    fetchTrending()
                 }, 5000)
                 // fetchRecentlyAdded()
             })
@@ -96,13 +97,12 @@ const RecentlyAddedList = (props) => {
 
     const MovieView = ({ movie, index }) => {
         // console.log(movie);
-        const [src, { blur }] = useProgressiveImg("https://flextream.herokuapp.com/fetch/image?url=" + movie.small_cover_image, "https://flextream.herokuapp.com/fetch/image?url=" + movie.medium_cover_image);
         return (
             <Container className={styles.newMovieCon} key={index} style={{ backgroundImage: `url(${"https://flextream.herokuapp.com/fetch/image?url=" + movie.large_screenshot_image2})`, }} maxWidth="xl">
                 <Container maxWidth='xl' className={styles.movieConFilter}>
                     <Paper elevation={10} className={styles.movieCoverCon}>
                         <Typography className={styles.rating}>{movie.rating + "/10"}<AiFillStar style={{ color: "#ffd700" }} /></Typography>
-                        <img src={src} style={{ objectFit: 'fill', width: '100%', height: '100%', filter: blur ? "blur(20px)" : "none", transition: blur ? "none" : "filter 0.3s ease-out" }} />
+                        <Image sourceSmall={movie.small_cover_image} sourceMedium={movie.medium_cover_image} styles={{ objectFit: 'fill', width: '100%', height: '100%'}} />
                     </Paper>
                     <Container maxWidth="xl" className={styles.movieDetails}>
                         <Typography className={styles.movieTitle} variant="h4" component="h2">{movie.title}</Typography>
@@ -212,7 +212,7 @@ const RecentlyAddedList = (props) => {
     )
 }
 
-export default RecentlyAddedList;
+export default TrendingList;
 
 const useStyles = makeStyles((theme) => ({
     titleContainer: {
@@ -252,6 +252,7 @@ const useStyles = makeStyles((theme) => ({
     movieConFilter: {
         background: " linear-gradient(153deg, rgba(24,27,37,99) 34%, rgba(19,23,33,0.8886905103838411) 59%, rgba(0,0,0,0) 100%)  !important",
         height: "100%",
+
         width: "100%",
         margin: 0,
         padding: '10px',
