@@ -13,8 +13,8 @@ class FetchService{
     call(url, options) {
         if(options)
             return fetch(this._url() + url, options);
-        return fetch(this._url());
-    }
+        return fetch(this._url()+url);
+    }   
 
     _url() {
         if (this._swapFlag) {
