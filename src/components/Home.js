@@ -15,6 +15,7 @@ import { IoIosRefreshCircle } from 'react-icons/io'
 import DetailedMovieView from './DetailedMovieView';
 import configration from './../util/configration';
 import fetchAPI from '../util/services/fetchService';
+import moviesListTypes from '../Data/movieListType';
 
 const url_link = configration.API_URL;
 
@@ -80,101 +81,56 @@ const Home = (props) => {
             </Container> */}
             <TrendingList />
             <MovieScrollView
-                parameters={{
-                    limit: 16,
-                    sort_by: 'like_count',
-                    minimum_rating: 0,
-                    genre: '',
-                }}
+                parameters={moviesListTypes.mostPopular}
                 title="Most Popular Movies"
                 TitleIcon={BsFillAwardFill}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={{
-                    limit: 20,
-                    sort_by: 'rating',
-                    minimum_rating: 0,
-                    genre: '',
-                }}
+                parameters={moviesListTypes.topRated}
                 title="Top Rated Movies"
                 largeDiv={true}
                 TitleIcon={FaStar}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={{
-                    limit: 15,
-                    sort_by: 'date_added',
-                    minimum_rating: 0,
-                    genre:""
-                }}
+                parameters={moviesListTypes.recentlyAdded}
                 title="Recently Added"
                 TitleIcon={IoIosRefreshCircle}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={{
-                    limit: 15,
-                    genre: 'Comedy',
-                    sort_by: "like_count",
-                    minimum_rating: 0,
-                }}
+                parameters={moviesListTypes.comedy}
                 title="Popular in Comedy"
                 TitleIcon={FaLaughSquint}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={{
-                    limit: 15,
-                    genre: 'Romance',
-                    sort_by: "download_count",
-                    minimum_rating: 0,
-                }}
+                parameters={moviesListTypes.romance}
                 title="Popular in Romance"
                 TitleIcon={AiFillHeart}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={{
-                    limit: 15,
-                    genre: 'fantasy',
-                    sort_by: "year",
-                    minimum_rating: 7
-                }}
+                parameters={moviesListTypes.fantasy}
                 title="Trending in Fantasy"
                 TitleIcon={GiMagicGate}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={{
-                    limit: 15,
-                    genre: 'Drama',
-                    sort_by: "year",
-                    minimum_rating: 7
-                }}
+                parameters={moviesListTypes.drama}
                 title="Treanding in Drama"
                 TitleIcon={GiDramaMasks}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={{
-                    limit: 15,
-                    genre: 'Horror',
-                    sort_by: "download_count",
-                    minimum_rating: 0,
-                }}
+                parameters={moviesListTypes.horror}
                 title="Popular in Horror"
                 TitleIcon={FaGhost}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={{
-                    limit: 15,
-                    genre: 'Musical',
-                    sort_by: "download_count",
-                    minimum_rating: 0,
-                }}
+                parameters={moviesListTypes.musical}
                 title="Popular in Musical"
                 TitleIcon={BsMusicNoteBeamed}
                 togglelModal={handelModalOpen}

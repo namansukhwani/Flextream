@@ -13,11 +13,8 @@ import { FiArrowRight } from 'react-icons/fi'
 import clsx from 'clsx';
 import { Skeleton } from '@material-ui/lab';
 import { NavLink } from 'react-router-dom';
-import configration from './../util/configration';
 import Image from '../util/components/image';
 import fetchAPI from './../util/services/fetchService';
-
-const url_link = configration.API_URL;
 
 const MovieView = ({ movie, index, togglelModal, largeDiv, styles, dataLength }) => {
     return (
@@ -57,35 +54,19 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
 
     //lifecycle
     useEffect(() => {
-        async function fetchMostPopular() {
-            let url = new URL(url_link + '/list_movies.json')
+        async function fetchData() {
 
-            const params = parameters
-
-            if (params != null) {
-                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-            }
-
-            fetchAPI.call("/fetch", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*"
-                },
-                body: JSON.stringify({
-                    url: url,
-                })
-            })
+            fetchAPI.call(`/movies/list/${encodeURIComponent(parameters?.type)}`)
                 .then(resp => resp.json())
                 .then(result => {
                     // console.log(result);
-                    setData(result.data.movies);
-                    setisLoading(false)
+                    setData(result);
+                    setisLoading(false);
                 })
                 .catch(err => console.log("ERROR::", err))
         };
 
-        fetchMostPopular();
+        fetchData();
     }, [])
 
     //methods
@@ -118,7 +99,7 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
                         to={{
                             pathname: `/viewMore/${title}`,
                             state: {
-                                parameters: parameters,
+                                parameters: parameters.query,
                                 title: title,
                                 backgroundImage: (isLoading ? "" : data[0].background_image_original)
                             }
