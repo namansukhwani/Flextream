@@ -13,11 +13,8 @@ import { AiFillPlayCircle, AiFillPlusCircle, AiFillStar,AiFillFire } from 'react
 import { Languages } from '../Data/languages';
 import Carousel from 'react-material-ui-carousel';
 import { NavLink } from 'react-router-dom';
-import configration from '../util/configration';
 import Image from '../util/components/image';
 import fetchAPI from '../util/services/fetchService';
-
-const url_link = configration.API_URL;
 
 const TrendingList = (props) => {
 
@@ -38,20 +35,8 @@ const TrendingList = (props) => {
     //methods
     async function fetchTrending() {
 
-        let url = new URL(url_link + '/list_movies.json')
 
-        const params = {
-            limit: 5,
-            sort_by: 'date_added',
-            minimum_rating: 7.5,
-            // sort_by:'like_count'
-        }
-
-        if (params != null) {
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-        }
-
-        fetchAPI.call("/movies/trending?limit=8", {
+        fetchAPI.call("/movies/trending/extraDetails", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -60,30 +45,9 @@ const TrendingList = (props) => {
         })
             .then(resp => resp.json())
             .then(data => {
-                // tempList=data.data.movies
-                // console.log(data);
-                const promises = data.map(movie => {
-                    return fetchAPI.call("/fetch", {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': "*"
-                        },
-                        body: JSON.stringify({
-                            url: url_link + `/movie_details.json?movie_id=${movie.id}&with_images=true&with_cast=true`,
-                        })
-                    })
-                        .then(resp => { return resp.json() })
-                        .catch(err => console.log("ERROR::", err))
-                })
-
-                Promise.all(promises).then(results => {
-                    const tempData = results.map(result => result.data.movie)
-                    setData(tempData);
-                    setIsLoading(false);
-                    // console.log(tempData);
-                })
-                    .catch(err => console.log("ERROR::", err))
+                console.log(data);
+                setData(data);
+                setIsLoading(false);
             })
             .catch(err => {
                 console.log('ERROR::', err);

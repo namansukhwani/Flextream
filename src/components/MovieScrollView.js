@@ -15,6 +15,7 @@ import { Skeleton } from '@material-ui/lab';
 import { NavLink } from 'react-router-dom';
 import Image from '../util/components/image';
 import fetchAPI from './../util/services/fetchService';
+import moviesListTypes from '../Data/movieListType';
 
 const MovieView = ({ movie, index, togglelModal, largeDiv, styles, dataLength }) => {
     return (
@@ -38,7 +39,7 @@ const MovieView = ({ movie, index, togglelModal, largeDiv, styles, dataLength })
     )
 }
 
-const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleIcon = AiFillFire, togglelModal }) => {
+const MovieScrollView = ({ largeDiv = false, type="comedy", TitleIcon = AiFillFire, togglelModal }) => {
     const styles = useStyles();
     // const theme = useTheme()
 
@@ -56,7 +57,7 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
     useEffect(() => {
         async function fetchData() {
 
-            fetchAPI.call(`/movies/list/${encodeURIComponent(parameters?.type)}`)
+            fetchAPI.call(`/movies/list/${encodeURIComponent(type)}`)
                 .then(resp => resp.json())
                 .then(result => {
                     // console.log(result);
@@ -88,7 +89,7 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
         <>
             <div style={{ paddingBottom: "15px", position: "relative", display: "flex", flexDirection: "column", }}>
                 <Container style={{ paddingInline: "15px" }} className={styles.titleContainer} maxWidth="xl">
-                    <Typography className={styles.title}><TitleIcon style={{ marginRight: 2 }} size={23} />{title}</Typography>
+                    <Typography className={styles.title}><TitleIcon style={{ marginRight: 2 }} size={23} />{moviesListTypes[type].title}</Typography>
                     <Button
                         variant="text"
                         color="default"
@@ -97,10 +98,8 @@ const MovieScrollView = ({ largeDiv = false, parameters = {}, title = "", TitleI
                         component={NavLink}
                         disabled={isLoading}
                         to={{
-                            pathname: `/viewMore/${title}`,
+                            pathname: `/viewMore/${type}`,
                             state: {
-                                parameters: parameters.query,
-                                title: title,
                                 backgroundImage: (isLoading ? "" : data[0].background_image_original)
                             }
                         }}

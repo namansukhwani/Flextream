@@ -14,6 +14,7 @@ import DetailedMovieView from './DetailedMovieView';
 import configration from './../util/configration';
 import Image from '../util/components/image';
 import fetchAPI from '../util/services/fetchService';
+import { useHistory, useLocation } from 'react-router-dom';
 
 const url_link = configration.API_URL;
 
@@ -36,6 +37,8 @@ const MovieView = ({ movie, index, handelModalOpen, styles }) => {
 }
 
 const Search = (props) => {
+    const location=useLocation()
+    const histor = useHistory();
 
     const styles = useStyles();
 
@@ -52,39 +55,48 @@ const Search = (props) => {
 
     //Lifecycle
     useEffect(() => {
-        const fetchTopMovies = () => {
-            let url = new URL(url_link + '/list_movies.json')
-
-            const params = {
-                limit: 40,
-                // genre: 'fantasy',
-                sort_by: "year",
-                minimum_rating: 7
-            }
-
-            if (params != null) {
-                Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-            }
-
-            fetchAPI.call("/fetch", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*"
-                },
-                body: JSON.stringify({
-                    url: url,
-                })
-            })
-                .then(resp => resp.json())
-                .then(result => {
-                    // console.log(result);
-                    setData(result.data.movies);
-                    setisLoading(false)
-                })
-                .catch(err => console.log("ERROR::", err))
+        const params=new URLSearchParams(location.search)
+        const searchValue = params.get('s');
+        console.log("Search param",searchValue);
+        if (searchValue?.length > 0) {
+            console.log("me yah hu");
+            onSearchChanged(searchValue);
         }
-        fetchTopMovies();
+        else {
+            const fetchTopMovies = () => {
+                let url = new URL(url_link + '/list_movies.json')
+    
+                const params = {
+                    limit: 40,
+                    // genre: 'fantasy',
+                    sort_by: "year",
+                    minimum_rating: 7
+                }
+    
+                if (params != null) {
+                    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+                }
+    
+                fetchAPI.call("/fetch", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': "*"
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                    })
+                })
+                    .then(resp => resp.json())
+                    .then(result => {
+                        // console.log(result);
+                        setData(result.data.movies);
+                        setisLoading(false)
+                    })
+                    .catch(err => console.log("ERROR::", err))
+            }
+            fetchTopMovies();
+        }
     }, [])
 
     //methods
@@ -130,7 +142,7 @@ const Search = (props) => {
 
         let params;
 
-        if (search === "") {
+        if (movie === "") {
             params = {
                 limit: 40,
                 // genre: 'fantasy',
@@ -175,9 +187,13 @@ const Search = (props) => {
     }
 
     function onSearchChanged(value) {
+        const shouldFetch=search.trim()===value.trim()
         setSearch(value)
-        setisLoading(true);
-        fetchSearchedMovie(value)
+        if (!shouldFetch) {
+            setisLoading(true);
+            fetchSearchedMovie(value)
+            histor.replace({ pathname: "/search", search: `?s=${encodeURIComponent(value)}` })
+        }
     }
 
     return (
