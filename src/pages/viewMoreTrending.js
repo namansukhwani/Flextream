@@ -114,10 +114,10 @@ function ViewMoreTrending(props) {
     
     return (
         <div id="scrollDiv">
-            <Container style={{ backgroundImage: `url(${configration.SERVER_URL_1+"/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
+            <Container style={{ backgroundImage: state?.backgroundImage ? `url(${configration.SERVER_URL_1+"/fetch/image?url=" + state.backgroundImage})`: 'url(https://media.istockphoto.com/photos/pop-corn-and-on-red-armchair-cinema-picture-id1271522601?b=1&k=20&m=1271522601&s=170667a&w=0&h=azZRRchShbrwRgq58omc1HOYABnfDDOzXJatuaZrueQ=)'  }} maxWidth="xl" className={styles.headingDiv}>
                 <div className={styles.filterDiv}>
                     <Typography className={styles.heading} variant="h4" component="h2">
-                        {state.title}
+                    Trending
                     </Typography>
                 </div>
             </Container>

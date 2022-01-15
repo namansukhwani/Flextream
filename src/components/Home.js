@@ -81,57 +81,49 @@ const Home = (props) => {
             </Container> */}
             <TrendingList />
             <MovieScrollView
-                parameters={moviesListTypes.mostPopular}
-                title="Most Popular Movies"
+                type={moviesListTypes?.mostPopular?.type}
                 TitleIcon={BsFillAwardFill}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={moviesListTypes.topRated}
-                title="Top Rated Movies"
+                type={moviesListTypes?.topRated?.type}
                 largeDiv={true}
                 TitleIcon={FaStar}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={moviesListTypes.recentlyAdded}
-                title="Recently Added"
+                type={moviesListTypes.recentlyAdded.type}
                 TitleIcon={IoIosRefreshCircle}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={moviesListTypes.comedy}
-                title="Popular in Comedy"
+                type={moviesListTypes.comedy.type}
                 TitleIcon={FaLaughSquint}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={moviesListTypes.romance}
+                type={moviesListTypes.romance.type}
                 title="Popular in Romance"
                 TitleIcon={AiFillHeart}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={moviesListTypes.fantasy}
-                title="Trending in Fantasy"
+                type={moviesListTypes.fantasy.type}
                 TitleIcon={GiMagicGate}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={moviesListTypes.drama}
-                title="Treanding in Drama"
+                type={moviesListTypes.drama.type}
                 TitleIcon={GiDramaMasks}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={moviesListTypes.horror}
-                title="Popular in Horror"
+                type={moviesListTypes.horror.type}
                 TitleIcon={FaGhost}
                 togglelModal={handelModalOpen}
             />
             <MovieScrollView
-                parameters={moviesListTypes.musical}
-                title="Popular in Musical"
+                type={moviesListTypes.musical.type}
                 TitleIcon={BsMusicNoteBeamed}
                 togglelModal={handelModalOpen}
             />

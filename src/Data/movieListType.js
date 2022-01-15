@@ -6,7 +6,8 @@ const moviesListTypes = {
             sort_by: 'like_count',
             minimum_rating: 0,
             genre: '',
-        }
+        },
+        title:"Most Popular Movies"
     },
     topRated: {
         type: "topRated",
@@ -15,7 +16,8 @@ const moviesListTypes = {
             sort_by: 'rating',
             minimum_rating: 0,
             genre: '',
-        }
+        },
+        title:"Top Rated Movies"
     },
     recentlyAdded: {
         type: "recentlyAdded",
@@ -24,7 +26,8 @@ const moviesListTypes = {
             sort_by: 'date_added',
             minimum_rating: 0,
             genre:""
-        }
+        },
+        title:'Recently Added'
     },
     comedy: {
         type: "comedy",
@@ -33,7 +36,8 @@ const moviesListTypes = {
             genre: 'Comedy',
             sort_by: "like_count",
             minimum_rating: 0,
-        }
+        },
+        title:"Popular in Comedy"
     },
     romance: {
         type: "romance",
@@ -42,7 +46,8 @@ const moviesListTypes = {
             genre: 'Romance',
             sort_by: "download_count",
             minimum_rating: 0,
-        }
+        },
+        title:"Popular in Romance"
     },
     fantasy: {
         type: "fantasy",
@@ -51,7 +56,8 @@ const moviesListTypes = {
             genre: 'fantasy',
             sort_by: "year",
             minimum_rating: 7
-        }
+        },
+        title:"Trending in Fantasy"
 },
     drama: {
         type: "drama",
@@ -60,7 +66,8 @@ const moviesListTypes = {
             genre: 'Drama',
             sort_by: "year",
             minimum_rating: 7
-        }
+        },
+        title:'Treanding in Drama'
     },
     horror: {
         type: "horror",
@@ -69,7 +76,8 @@ const moviesListTypes = {
             genre: 'Horror',
             sort_by: "download_count",
             minimum_rating: 0,
-        }
+        },
+        title:"Popular in Horror"
     },
     musical: {
         type: "musical",
@@ -78,7 +86,8 @@ const moviesListTypes = {
             genre: 'Musical',
             sort_by: "download_count",
             minimum_rating: 0,
-        }
+        },
+        title:"Popular in Musical"
     }
 }
 

@@ -13,6 +13,7 @@ import DetailedMovieView from './DetailedMovieView';
 import configration from './../util/configration';
 import Image from '../util/components/image';
 import fetchAPI from '../util/services/fetchService';
+import moviesListTypes from '../Data/movieListType';
 
 const url_link = configration.API_URL;
 
@@ -20,7 +21,7 @@ const MovieView = ({ movie, index, handelModalOpen, styles }) => {
 
     return (
         <div key={index.toString()} style={{ paddingInline: "5px", paddingBlock: "10px" }}>
-            <Tooltip title={movie.title} arrow placement="bottom">
+            <Tooltip title={movie?.title} arrow placement="bottom">
                 <Paper onClick={() => handelModalOpen(movie.id)} key={index.toString()} className={styles.movieCon}>
                     <div style={{}}>
                         <Image sourceSmall={movie.small_cover_image} sourceMedium={movie.medium_cover_image} styles={{ borderRadius: '10px', objectFit: 'fill', width: '100%', height: '100%' }} />
@@ -37,12 +38,13 @@ const MovieView = ({ movie, index, handelModalOpen, styles }) => {
 function ViewMore(props) {
 
     const styles = useStyles();
-    const { state } = useLocation();
+    const {state,pathname} = useLocation();
     const limit = 40;
-
+    
     //refs
 
     //states
+    const [type, setType] = useState(moviesListTypes.comedy.type)
     const [pageNo, setPageNo] = useState(1);
     const [data, setData] = useState([])
     const [isLoading, setisLoading] = useState(true)
@@ -53,7 +55,12 @@ function ViewMore(props) {
 
     //lifecycle
     useEffect(() => {
-        fetchData();
+        const pathType = pathname.substring(pathname.lastIndexOf('/') + 1)
+        if (pathType in moviesListTypes) {
+            setType(pathType);
+            fetchData(pathType);
+        }
+        else fetchData(type);
     }, [])
 
     //methods
@@ -94,15 +101,17 @@ function ViewMore(props) {
             .catch(err => console.log("ERROR::", err))
     }
 
-    function fetchData() {
+    function fetchData(type) {
         let url = new URL(url_link + '/list_movies.json')
+
+        const parameters=moviesListTypes[type].query
 
         const params = {
             limit: limit,
             page: 1,
-            genre: state.parameters.genre,
-            sort_by: state.parameters.sort_by,
-            minimum_rating: state.parameters.minimum_rating,
+            genre: parameters.genre,
+            sort_by: parameters.sort_by,
+            minimum_rating: parameters.minimum_rating,
         }
 
         if (params != null) {
@@ -136,12 +145,13 @@ function ViewMore(props) {
         // console.log("feting MOre data");
         let url = new URL(url_link + '/list_movies.json')
 
+        const parameters=moviesListTypes[type].query
         const params = {
             limit: limit,
             page: pageNo,
-            genre: state.parameters?.genre,
-            sort_by: state.parameters?.sort_by,
-            minimum_rating: state.parameters?.minimum_rating,
+            genre: parameters?.genre,
+            sort_by: parameters?.sort_by,
+            minimum_rating: parameters?.minimum_rating,
         }
 
         // console.log(params);
@@ -177,10 +187,10 @@ function ViewMore(props) {
 
     return (
         <div id="scrollDiv">
-            <Container style={{ backgroundImage: `url(${configration.SERVER_URL_1+"/fetch/image?url=" + state.backgroundImage})` }} maxWidth="xl" className={styles.headingDiv}>
+            <Container style={{ backgroundImage: state?.backgroundImage ? `url(${configration.SERVER_URL_1+"/fetch/image?url=" + state.backgroundImage})`: 'url(https://media.istockphoto.com/photos/pop-corn-and-on-red-armchair-cinema-picture-id1271522601?b=1&k=20&m=1271522601&s=170667a&w=0&h=azZRRchShbrwRgq58omc1HOYABnfDDOzXJatuaZrueQ=)' }} maxWidth="xl" className={styles.headingDiv}>
                 <div className={styles.filterDiv}>
                     <Typography className={styles.heading} variant="h4" component="h2">
-                        {state.title}
+                        {moviesListTypes[type].title}
                     </Typography>
                 </div>
             </Container>
